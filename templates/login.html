@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container-login">
+        <h1 style="text-align: center;">Login</h1>
+        <div>
+            <form class="login-input" method="POST">
+                <input placeholder="Type your email-address..." type="email" name="email" required>
+                <input placeholder="Type your password..." type="password" name="senha" required>
+                <input type="submit" value="Entrar">
+            </form>
+        </div>
+        <p>Forgot Password?</p>
+        <p>{{mensagem}}</p>
+
+    </div>
+    <script>
+  const mensagem = document.getElementById("mensagem");
+  const inputs = document.querySelectorAll("input");
+
+  inputs.forEach(input => {
+    input.addEventListener("input", () => {
+      if (mensagem) {
+        mensagem.textContent = "";
+      }
+    });
+  });
+</script>
+</body>
+
+</html>
