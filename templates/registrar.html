@@ -5,20 +5,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="stylesheet" href="{{ url_for('static', filename='css/registrar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/registrar.css') }}">
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-pV6W6Xn87HscqOMaj8xtXs11xU+PxLMWmQGyoQCRG6FllPAqZBc4hJrRbX0HYcmj7ySQk6jhLd47vN9QfArP5Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <title>Login</title>
+    <title>Sign Up</title>
     <script src="https://kit.fontawesome.com/f2a6af5805.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <section class="main_container">
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <p>Login with:</p>
+            <p>Register with:</p>
             <div class="container_button">
                 <button>
                     <i class="fa-brands fa-google"></i>Google
@@ -34,7 +34,30 @@
         <p style="text-align: center; margin-top: 10px;">Or</p>
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
             <form method="POST" class="container_form">
-                
+                <div class="name_flex">
+                    <div>
+                        <label for="first_name">First Name</label>
+                        <label for="last_name">Last Name</label>
+                    </div>
+                    <div>
+                        <div class="name_flex_input">
+                            <i class="fa-solid fa-circle-user"></i>
+                            <input type="text" name="first_name" placeholder="Type your first name" required>
+                        </div>
+                        
+                        <div class="name_flex_input">
+                            <i class="fa-solid fa-circle-user"></i>
+                            <input type="text" name="last_name" placeholder="Type your last name" required>
+                        </div>
+                        
+                    </div>
+                </div>
+                <label for="username">Username</label>
+                <div class="input_flex">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" name="username" placeholder="Type your username" required>
+                </div>
+
                 <label for="email">Email</label>
                 <div class="input_flex">
                     <i class="fa-solid fa-envelope"></i>
@@ -47,11 +70,11 @@
                     <input type="password" name="senha" placeholder="Type your password" required>
                 </div>
 
-                <button class="form_submit" type="submit">Sign In</button>
+                <button class="form_submit" type="submit">Sign Up</button>
                 {{mensagem}}
             </form>
-            <p class="info_text"><a style="color: #94A3B8; text-decoration: none;" href="">Forgot your password?</a></b></p>
-            <p style="text-align: center;" class="info_text">Don't have an account? <a style="color: #94A3B8; text-decoration: none;" href="{{ url_for("cadastro.index") }}">Sign In</a></p>
+            <p class="info_text">By creating an account, you agree to <b><a style="color: #94A3B8; text-decoration: none;" href="">Terms of Service</a></b></p>
+            <p style="text-align: center;" class="info_text">Already have an account? <a style="color: #94A3B8; text-decoration: none;" href="{{ url_for("login.index") }}">Login</a></p>
         </div>
     </section>
 </body>

@@ -1,0 +1,140 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #121212;
+    height: 100vh;
+    width: 100vw;
+    color: #E0E7FF;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main_container {
+    background-color: #1E293B;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+/* Buttons */
+
+.container_button {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container_button button {
+    width: 30%;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 8px;
+    border: none;
+    background-color: #2563EB;
+    color: #E0E7FF;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.container_button button:hover {
+    background-color: #1D4ED8;
+}
+
+.container_form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+/* Input name */
+
+.name_flex {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.name_flex div {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: space-around;
+}
+
+
+.name_flex_input {
+    display: flex;
+    gap: 1rem;
+    position: relative;
+    width: 100%;
+}
+
+.name_flex_input i {
+    position: absolute;
+    color: #000;
+    left: 2%;
+    bottom: 30%;
+}
+
+.name_flex_input input {
+    width: 100%;
+    border: none;
+    padding: 0.7rem 2rem;
+}
+
+.name_flex_input input:focus {
+    outline: 1px #000 solid;
+}
+
+
+
+/* Input credentials */
+.input_flex {
+    position: relative;
+}
+
+.input_flex i {
+    position: absolute;
+    color: #000;
+    left: 2%;
+    bottom: 30%;
+}
+
+.input_flex input {
+    border: none;
+    width: 100%;
+    padding: 0.7rem 2rem;
+}
+
+.input_flex input:focus {
+    outline: 1px #000 solid;
+}
+
+.form_submit {
+    padding: 0.5rem;
+    background-color: #2563EB;
+    color: #E0E7FF;
+    border: none;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.form_submit:hover {
+    background-color: #1D4ED8;
+}
+
+.info_text {
+    color: grey;
+    font-size: 0.8rem;
+}
