@@ -1,0 +1,58 @@
+@import url("style.css");
+
+main {
+    display: flex;
+    height: 100%;
+}
+
+.sidebar {
+    height: 100%;
+    background-color: var(--secondbackground-color);
+    width: 20%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.sidebar ul {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.sidebar-status {
+    color: var(--main-text);
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.4rem;
+}
+
+.sidebar-status i:hover {
+    color: var(--second-text);
+}
+
+.sidebar-user {
+    font-size: 10rem;
+}
+
+.sidebar-item {
+    list-style: none;
+    align-items: center;
+    transition: 0.25s;
+}
+
+.sidebar-item a:hover {
+    color: var(--second-text);
+}
+
+.sidebar-item a{
+    text-decoration: none;
+    color: var(--main-text);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.4rem;
+}
+
