@@ -4,123 +4,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Font Awesome CDN -->
+    <title>Dashboard</title>
+
+    <!-- Font Awesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-pV6W6Xn87HscqOMaj8xtXs11xU+PxLMWmQGyoQCRG6FllPAqZBc4hJrRbX0HYcmj7ySQk6jhLd47vN9QfArP5Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <!-- Kit opcional do Font Awesome -->
     <script src="https://kit.fontawesome.com/f2a6af5805.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="../static/css/dashboard.css">
-    <link rel="stylesheet" href="../static/css/addTask.css">
-
-    <title>Document</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/addTask.css') }}">
 </head>
 
 <body>
     <main>
+        <!-- Sidebar -->
         <nav class="sidebar" id="sidebar" data-status="open">
             <ul>
                 <li class="sidebar-item sidebar-status">
                     <p class="sidebar-text">Sidebar</p>
                     <i id="btn-sidebar" style="cursor: pointer;" class="sidebar-icons fa-solid fa-thumbtack"></i>
                 </li>
-                <li class="sidebar-item"><a href=""><i class="sidebar-icons fa-solid fa-circle-user sidebar-user"
-                            data-perfil="perfil"></i></a></li>
                 <li class="sidebar-item">
-                    <a href="">
-                        <i class="sidebar-icons fa-solid fa-user-group"></i>
-                        <p class="sidebar-text">Amigos</p>
-                    </a>
+                    <a href=""><i class="sidebar-icons fa-solid fa-circle-user sidebar-user"></i></a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="">
-                        <i class="sidebar-icons fa-solid fa-message"></i>
-                        <p class="sidebar-text">Mensagens</p>
-
-                    </a>
+                    <a href=""><i class="sidebar-icons fa-solid fa-user-group"></i><p class="sidebar-text">Amigos</p></a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="">
-                        <i class="sidebar-icons fa-solid fa-gear"></i>
-                        <p class="sidebar-text">Config</p>
-
-                    </a>
+                    <a href=""><i class="sidebar-icons fa-solid fa-message"></i><p class="sidebar-text">Mensagens</p></a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="">
-                        <i class="sidebar-icons fa-solid fa-chart-simple"></i>
-                        <p class="sidebar-text">Analytics</p>
-
-                    </a>
+                    <a href=""><i class="sidebar-icons fa-solid fa-gear"></i><p class="sidebar-text">Config</p></a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="">
-                        <i class="sidebar-icons fa-solid fa-right-from-bracket"></i>
-                        <p class="sidebar-text">Sign Out</p>
-
-                    </a>
+                    <a href=""><i class="sidebar-icons fa-solid fa-chart-simple"></i><p class="sidebar-text">Analytics</p></a>
+                </li>
+                <li class="sidebar-item">
+                    <a href=""><i class="sidebar-icons fa-solid fa-right-from-bracket"></i><p class="sidebar-text">Sign Out</p></a>
                 </li>
             </ul>
         </nav>
+
+        <!-- Área principal -->
         <section class="container-grid">
             <div class="container-grid__child">
+
+                <!-- Coluna Não iniciadas -->
                 <div class="grid-child">
-                    <h1>Não inicidas</h1>
+                    <h1>Não iniciadas</h1>
+                    {% for tarefa in tarefas['start'] %}
+                        <div class="child_task--container" data-id="{{ tarefa.id }}">
+                            <i onclick="openTaskWindow('task', event)" class="fa-solid fa-pen-to-square"></i>
+                            <p>{{ tarefa.titulo }}</p>
+                            <p>Até {{ tarefa.data_local}}</p>
+                            <i class="remove_task fa-solid fa-trash"></i>
+                        </div>
+                    {% endfor %}
                 </div>
+
+                <!-- Coluna Em andamento -->
                 <div class="grid-child">
                     <h1>Em andamento</h1>
+                    {% for tarefa in tarefas['on_going'] %}
+                        <div class="child_task--container" data-id="{{ tarefa.id }}">
+                            <i onclick="openTaskWindow('task', event)" class="fa-solid fa-pen-to-square"></i>
+                            <p>{{ tarefa.titulo }}</p>
+                            <p>Até {{ tarefa.data_local }}</p>
+                            <i class="remove_task fa-solid fa-trash"></i>
+                        </div>
+                    {% endfor %}
                 </div>
+
+                <!-- Coluna Concluídas -->
                 <div class="grid-child">
                     <h1>Concluídas</h1>
+                    {% for tarefa in tarefas['finish'] %}
+                        <div class="child_task--container" data-id="{{ tarefa.id }}">
+                            <i onclick="openTaskWindow('task', event)" class="fa-solid fa-pen-to-square"></i>
+                            <p>{{ tarefa.titulo }}</p>
+                            <p>Até {{ tarefa.data_local }}</p>
+                            <i class="remove_task fa-solid fa-trash"></i>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
-            <button onclick="openTaskWindow()" class="addTask__button" id="addTaskButton">Add Task</button>
+
+            <!-- Botão adicionar nova tarefa -->
+            <button onclick="openTaskWindow('add', event)" class="addTask__button" id="addTaskButton">Add Task</button>
         </section>
-        <nav class="container-addTaskWindow">
-            <div class="addTask-window">
-                <i onclick="closeTaskWindow()" class="closeButton fa-solid fa-xmark"></i>
-                <form method="POST" class="addTask-form">
-                    <div>
-                        <label for="title">Task title</label>
-                        <input type="text" name="title" placeholder="Type Task's Title" required>
-                    </div>
 
+        <!-- Janela modal para adicionar/editar tarefa -->
+        <nav class="container-addTaskWindow"></nav>
 
-                    <div>
-                        <label for="description">Task description</label>
-                        <textarea type="text" name="description" maxlength="500" rows="6" cols="10"
-                            placeholder="Type Task's Description"></textarea>
-                    </div>
-
-                    <div >
-                        <label for="file">Task file</label>
-                        <input class="file" type="file" name="file">
-                    </div>
-
-                    <div><label for="date">Due Date</label>
-                        <input type="datetime-local" name="date">
-                    </div>
-
-                    <div>
-                        <label for="filetasktype">Task status</label>
-                        <select name="filetasktype" required>
-                            <option value="start">Não iniciado</option>
-                            <option value="onGoing">Em andamento</option>
-                            <option value="finish">Concluídas</option>
-                        </select>
-                    </div>
-
-
-                    <button type="submit">Add</button>
-                </form>
-            </div>
-        </nav>
+        <!-- Dados ocultos para preencher quando editar -->
+        <div id="tarefa" style="display: none;" data-tarefas='{{ tarefasEdit | safe }}'></div>
     </main>
 
-
-    <script src="{{ url_for("static", filename="js/sidebar.js") }}"></script>
-    <script src="{{ url_for("static", filename="js/sidebarTask.js") }}"></script>
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sidebarTask.js') }}"></script>
 </body>
-
 </html>

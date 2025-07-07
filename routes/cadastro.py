@@ -1,7 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Flask,Blueprint, render_template, request, redirect, url_for, session
 import sqlite3
 import bcrypt
-
 bp = Blueprint("cadastro", __name__, url_prefix="/")
 
 @bp.route("/", methods=["GET", "POST"])
