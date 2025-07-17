@@ -1,0 +1,6 @@
+Criar o sistema de amigos
+Criar o sistema de mensagens
+Criar o sistema de config
+formatar data
+Criar sistema para fotos
+Tornar responsível

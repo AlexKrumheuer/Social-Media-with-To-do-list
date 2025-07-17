@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-pV6W6Xn87HscqOMaj8xtXs11xU+PxLMWmQGyoQCRG6FllPAqZBc4hJrRbX0HYcmj7ySQk6jhLd47vN9QfArP5Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Kit opcional do Font Awesome -->
+    <script src="https://kit.fontawesome.com/f2a6af5805.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/friends.css">
+    <link rel="stylesheet" href="/static/css/perfil-homepage.css">
+    <title>Profile</title>
+</head>
+
+<body>
+    <section class="sidebar-option">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h2>Amigos</h2>
+
+            <div>
+                <a class="home-button" href="/templates/dashboard.html">
+                    <i class="fa-solid fa-house"></i>
+                    Home
+                </a>
+            </div>
+        </div>
+
+        <ul class="sidebar-items">
+            <li>
+                <a href="./friend-request.html">
+                    <i class="fa-solid fa-user-large"></i>
+                    <p>Pedidos de Amizade</p>
+                </a>
+            </li>
+            <li>
+                <a href="./friends-suggestions.html">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <p>Sugestões</p>
+                </a>
+
+            </li>
+            <li>
+                <a href="./allfriends.html">
+                    <i class="fa-solid fa-users-line"></i>
+                    <p>Todos os Amigos</p>
+                </a>
+
+            </li>
+        </ul>
+    </section>
+    <div class="perfil">
+        <div class="perfil-image">
+            <p>Carlos Antônio</p>
+            <img src="/static/uploads/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg" alt="">
+        </div>
+
+        <div class="bio">
+            <label for="bio">Bio</label>
+            <p name="bio">Sou uma pessoa curiosa, apaixonada por aprender e explorar novas áreas. Gosto de desafios e
+                acredito que a dedicação e a vontade de evoluir fazem toda a diferença em qualquer caminho que
+                escolhemos trilhar</p>
+        </div>
+        <div>
+            <button>Enviar pedido de amizade</button>
+            <button>Mensagem</button>
+        </div>
+    </div>
+
+</body>
+
+</html>

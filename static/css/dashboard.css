@@ -22,14 +22,20 @@ main {
     gap: 2rem;
 }
 
-.sidebar-status {
+.sidebar-item a,
+.sidebar-item div {
     color: var(--main-text);
+    cursor: pointer;
+}
+
+.sidebar-status {
+    color: var(--second-text);
     display: flex;
     justify-content: space-between;
     font-size: 1.4rem;
 }
 
-.sidebar-status i:hover {
+.status i:hover {
     color: var(--second-text);
 }
 
@@ -44,15 +50,19 @@ main {
 }
 
 .sidebar-item a:hover {
-    color: var(--second-text);
+    color: var(--hover-button);
 }
 
-.sidebar-item a{
+.sidebar-item div:hover {
+    color: var(--hover-button);
+}
+
+.sidebar-item a, .sidebar-item div{
     text-decoration: none;
-    color: var(--main-text);
     display: flex;
     align-items: center;
     gap: 1rem;
     font-size: 1.4rem;
 }
+
 

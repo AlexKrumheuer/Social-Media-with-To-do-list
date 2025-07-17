@@ -1,0 +1,160 @@
+.sidebar-option {
+    height: 110vh;
+    width: 20%;
+    background-color: var(--background-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 1rem;
+    display: flex;
+    gap: 2rem;
+    flex-direction: column;
+}
+
+.home-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.25s;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.5rem;
+}
+
+.home-button:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+.sidebar-option h2 {
+    color: var(--main-text);
+}
+
+.sidebar-items {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    font-size: 1.2rem;
+}
+
+.sidebar-items a {
+    text-decoration: none;
+}
+
+.sidebar-items li a {
+    color: var(--main-text);
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 8px;
+    gap: 1rem;
+    cursor: pointer;
+}
+
+.sidebar-items li a:hover {
+    transform: scale(1.05);
+    background-color: #fff;
+    color: #000;
+}
+
+.sidebar-items li a i {
+    border-radius: 50%;
+    background-color: #000;
+    color: #fff;
+    padding: 1rem;
+}
+
+body {
+    display: flex;
+    overflow-x: hidden;
+    padding: 0;
+}
+
+.friendlist-grid {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    margin-left: 20%;
+    width: 100%;
+}
+
+.friendlist-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.friendlist-title p {
+    color: blue;
+    font-size: 1.2rem;
+    padding: 0.3rem;
+    transition: 0.25s;
+    cursor: pointer;
+}
+
+.friendlist-title p:hover {
+    background-color: #c0c0c0;
+    font-weight: bold;
+}
+
+.grid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: auto auto auto auto;
+    row-gap: 2rem;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.card {
+    width: 14rem;
+    height: 20rem;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: var(--secondbackground-color);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    transition: 0.25s;
+}
+
+.card:hover {
+    transform: scale(1.1)
+}
+
+.card img {
+    width: 100%;
+    height: 60%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.card h2 {
+    font-size: 1.25rem;
+    font-weight: normal;
+    color: var(--main-text);
+    text-align: center;
+}
+
+.card button {
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: none;
+    background-color: var(--main-button);
+    color: var(--main-text);
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.card button:hover {
+    background-color: var(--hover-button);
+}

@@ -18,7 +18,7 @@ function openTaskWindow(caller, event = null) {
         <form class="addTask-form">
             <div>
                 <label for="title">Título</label>
-                <input type="text" name="title" placeholder="Digite o título" required>
+                <input type="text" maxlength="20"  name="title" placeholder="Digite o título" required>
             </div>
             <div>
                 <label for="description">Descrição</label>
@@ -52,24 +52,6 @@ function openTaskWindow(caller, event = null) {
     }
 
     navTaskWindow.style.display = "flex"
-}
-
-//Preenche campos para edição
-function fillItems(event) {
-    const taskContainer = event.target.closest(".child_task--container")
-    const id = taskContainer.dataset.id
-    let tarefaEl = document.getElementById("tarefa")
-    let tarefasLista = JSON.parse(tarefaEl.dataset.tarefas)
-
-    const element = tarefasLista.find(el => el.id == id)
-    if (element) {
-        document.querySelector(".addTask-form input[name='title']").value = element.titulo
-        document.querySelector(".addTask-form textarea[name='description']").value = element.descricao
-        document.querySelector(".addTask-form input[name='date']").value = element.data_local
-        document.querySelector(".addTask-form select[name='filetasktype']").value = element.status
-
-        setupSubmit(element.id)
-    }
 }
 
 //Setup do submit (criar ou editar)
@@ -125,6 +107,23 @@ function removerTarefa(event){
     })
 }
 
+
 document.querySelectorAll(".remove_task").forEach(btn => {
     btn.addEventListener("click", removerTarefa)
 })
+
+//Preenche campos para edição
+function fillItems(event) {
+    const taskContainer = event.target.closest(".child_task--container")
+    const id = taskContainer.dataset.id
+    let tarefaEl = document.getElementById("tarefa")
+    let tarefasLista = JSON.parse(tarefaEl.dataset.tarefas)
+    const element = tarefasLista.find(el => el.id == id)
+    if (element) {
+        document.querySelector(".addTask-form input[name='title']").value = element.titulo
+        document.querySelector(".addTask-form textarea[name='description']").value = element.descricao
+        document.querySelector(".addTask-form input[name='date']").value = element.data_local
+        document.querySelector(".addTask-form select[name='filetasktype']").value = element.status
+        setupSubmit(element.id)
+    }
+}

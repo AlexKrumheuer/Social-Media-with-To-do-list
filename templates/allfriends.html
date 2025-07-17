@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friends</title>
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-pV6W6Xn87HscqOMaj8xtXs11xU+PxLMWmQGyoQCRG6FllPAqZBc4hJrRbX0HYcmj7ySQk6jhLd47vN9QfArP5Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Kit opcional do Font Awesome -->
+    <script src="https://kit.fontawesome.com/f2a6af5805.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/friends.css') }}">
+</head>
+
+<body>
+    <section class="sidebar-option">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h2>Amigos</h2>
+
+            <div>
+                <a class="home-button" href="{{ url_for('dashboard.index')}}">
+                    <i class="fa-solid fa-house"></i>
+                    Home
+                </a>
+            </div>
+        </div>
+
+        <ul class="sidebar-items">
+            <li>
+                <a href="{{ url_for('dashboard.requests') }}">
+                    <i class="fa-solid fa-user-large"></i>
+                    <p>Pedidos de Amizade</p>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('dashboard.suggestions')}}">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <p>Sugestões</p>
+                </a>
+
+            </li>
+            <li>
+                <a href="{{ url_for('dashboard.friends')}}">
+                    <i class="fa-solid fa-users-line"></i>
+                    <p>Todos os Amigos</p>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <div class="friendlist-grid">
+        <div>
+            <div class="friendlist-title">
+                <h2>Todos seus Amigos</h2>
+            </div>
+
+            <div class="grid">
+
+                {% for friend in friendslist %}
+                <div class="card">
+                    <img src="../static/uploads/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg" alt="">
+                    <h2>{{ friend.username }}</h2>
+                    <button>Conversar</button>
+                    <button>Deixar de seguir</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

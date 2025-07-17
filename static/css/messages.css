@@ -1,0 +1,54 @@
+.container-message {
+    margin-left: 20%;
+    padding: 1rem;
+    height: 100%;
+    width: 80%;
+}
+
+.profile {
+    width: 100%;
+    height: 20%;
+    display: flex;
+    padding: 1rem;
+    border: 2px solid #c0c0c0;
+}
+
+.profile img {
+    width: auto;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.message {
+    height: 70%;
+    width: 100%;
+    padding: 2rem;
+}
+
+.message p {
+    padding: 1rem;
+    display: inline-block;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+}
+
+.submit {
+    height: 10%;
+    width: 100%;
+}
+
+.submit input {
+    width: 80%;
+    padding: 1rem;
+    border: 2px #c0c0c0 solid;
+    border-radius: 8px; 
+
+}
+
+.submit input:focus {
+    outline: 2px solid black;
+}
+
+.submit i {
+    cursor: pointer;
+    font-size: 1.5rem;
+}

@@ -119,3 +119,188 @@ def remover_tarefa():
     conn.close()
 
     return jsonify({"success": True})
+
+#Rota para logout
+@bp.route("/logout", methods=["GET"])
+def logout():
+    session.clear()
+    return redirect(url_for("login.index"))
+
+#Rota para mensagens
+@bp.route("/mensagens", methods=["GET"])
+def mensagens():
+    return render_template("mensagens.html")
+
+#Rota para amigos
+@bp.route("/friends", methods=["GET"])
+def friends():
+    usuario_id = session.get("usuario_id")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Eu enviei
+    cursor.execute("""
+        SELECT usuarios.id, usuarios.username
+        FROM relationship
+        JOIN usuarios ON relationship.amigo_id = usuarios.id
+        WHERE relationship.usuario_id = ? AND relationship.status = 'friends'
+    """, (usuario_id,))
+
+    friend_sent = cursor.fetchall()
+
+    # Eu recebi
+    cursor.execute("""
+        SELECT usuarios.id, usuarios.username
+        FROM relationship
+        JOIN usuarios ON relationship.usuario_id = usuarios.id
+        WHERE relationship.amigo_id = ? AND relationship.status = 'friends'
+    """, (usuario_id,))
+
+    friend_received = cursor.fetchall()
+    print(friend_received)
+    friendslist = friend_sent + friend_received
+    conn.close()
+    print(f"Amigos {friendslist}")
+    return render_template("allfriends.html", friendslist=friendslist)
+
+#Rota para requests de amizade
+@bp.route("/requests", methods=["GET"])
+def requests():
+
+    usuario_id = session.get("usuario_id")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT relationship.id AS rel_id, usuarios.id AS user_id, usuarios.username
+FROM relationship 
+JOIN usuarios ON relationship.usuario_id = usuarios.id
+WHERE relationship.amigo_id = ? AND relationship.status = 'pendente'
+""", (usuario_id,))
+    
+    usuarios = cursor.fetchall()
+    conn.close()
+
+    return render_template("friend-request.html", usuarios=usuarios)
+
+#Rota para sugestões de amizade
+@bp.route("/suggestions", methods=["GET"])
+def suggestions():
+
+    usuario_id = session.get("usuario_id")
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT u.id, u.username
+FROM usuarios u
+WHERE u.id != :usuario_id
+AND u.id NOT IN (
+    SELECT amigo_id FROM relationship
+    WHERE usuario_id = :usuario_id
+    AND status IN ('friends', 'pendente')
+)
+AND u.id NOT IN (
+    SELECT usuario_id FROM relationship
+    WHERE amigo_id = :usuario_id
+    AND status IN ('friends', 'pendente')
+);
+""", (usuario_id,))
+    
+    usuarios = cursor.fetchall()
+    conn.close()
+
+    return render_template("friends-suggestions.html", usuarios=usuarios)
+
+#Rota para enviar sugestão de amizade
+@bp.route("/add_friend", methods=["POST"])
+def add_friend():
+    data = request.get_json()
+    usuario_id = session.get("usuario_id")
+    amigo_id = data.get("amigo_id")
+
+    if not usuario_id or not amigo_id:
+        return jsonify({"success": False, "error": "IDs inválidos"}), 400
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO relationship (usuario_id, amigo_id, status)
+        VALUES (?, ?, ?)
+""", (usuario_id, amigo_id, "pendente"))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": True})
+
+#Rota para aceitar pedido de amizade
+@bp.route("/accept_request", methods=["POST"])
+def accept_request():
+    data = request.get_json()
+    usuario_id = session.get("usuario_id")
+    amigo_id = data.get("amigo_id")
+
+    if not usuario_id or not amigo_id:
+        return jsonify({"success": False, "error": "IDs inválidos"}), 400
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    UPDATE relationship 
+    SET status = ?
+    WHERE usuario_id = ? AND amigo_id = ?
+""", ('friends', amigo_id, usuario_id))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": True})
+
+
+#Rota para acessar dados dos usuarios
+@bp.route("/get_user")
+def get_user():
+    usuario_id = session.get("usuario_id")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT firstname, lastname, username, email FROM usuarios WHERE id = ? ", (usuario_id,))
+    usuario_data = cursor.fetchall()
+    usuarios = [{'firstname': row[0], 'lastname': row[1], 'username': row[2], 'email': row[3]} for row in usuario_data]
+    conn.close()
+    return jsonify(usuarios)
+
+#Rota para alterar configurações de perfil
+@bp.route("/config_user", methods=["POST"])
+def config_user():
+    data = request.get_json()
+    usuario_id = session.get("usuario_id")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM usuarios WHERE id=?", (usuario_id,))
+    usuario = cursor.fetchone()
+    if not usuario:
+        return jsonify({"success": False, "error": "Usuario não encontrada ou acesso negado"}), 403
+    
+    # Extrai os dados antigos
+    old_data = dict(usuario)  # converte o Row em dict
+
+    # Usa os dados enviados *se* existirem, senão usa os antigos
+    updated_data = {
+        "firstname": data.get("firstName") or old_data["firstname"],
+        "lastname":  data.get("lastName") or old_data["lastname"],
+        "username":  data.get("username") or old_data["username"],
+        "email":     data.get("email") or old_data["email"],
+    }
+
+    cursor.execute("""
+        UPDATE usuarios
+        SET firstname = ?, lastname = ?, username = ?, email = ?
+        WHERE id = ?
+    """, (updated_data['firstname'], updated_data['lastname'], updated_data['username'], updated_data['email'], usuario_id))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": True})

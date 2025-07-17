@@ -42,6 +42,7 @@
     transition: 0.25s;
     min-width: 100%;
     justify-content: space-between;
+    color: #000;
 }
 
 .child_task--container i {

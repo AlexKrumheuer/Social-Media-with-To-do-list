@@ -1,0 +1,72 @@
+.perfil {
+    width: 80%;
+    height: 100%;
+    margin-left: 20%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+    padding: 3rem;
+}
+
+.perfil-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 60%;
+    height: 40%;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
+    padding: 1rem;
+}
+
+.perfil-image img {
+    width: 40%;
+    height: 90%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.perfil-image p {
+    font-size: 1.5rem;
+    height: 100%;
+    display: flex;
+}
+
+.bio {
+    width: 60%;
+    padding: 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
+}
+
+.bio p {
+    text-align: justify;
+}
+
+.bio label {
+    font-weight: bold;
+}
+
+.perfil button {
+    padding: 1rem;
+    background-color: var(--main-button);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.25s;
+    font-size: 1.1rem;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
+}   
+
+.perfil button:hover {
+    background-color: var(--hover-button);
+    color: #fff;
+}
+

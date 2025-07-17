@@ -17,6 +17,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/addTask.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/configUser.css') }}">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/dashboard.css">
+    <link rel="stylesheet" href="../static/css/addTask.css">
+    <link rel="stylesheet" href="../static/css/configUser.css">
 </head>
 
 <body>
@@ -32,19 +37,30 @@
                     <a href=""><i class="sidebar-icons fa-solid fa-circle-user sidebar-user"></i></a>
                 </li>
                 <li class="sidebar-item">
-                    <a href=""><i class="sidebar-icons fa-solid fa-user-group"></i><p class="sidebar-text">Amigos</p></a>
+                    <a href="{{ url_for('dashboard.friends')}}">
+                        <i class="sidebar-icons fa-solid fa-user-group"></i>
+                        <p class="sidebar-text">Amigos</p>
+                    </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href=""><i class="sidebar-icons fa-solid fa-message"></i><p class="sidebar-text">Mensagens</p></a>
+                    <a href="{{ url_for('dashboard.mensagens')}}">
+                        <i class="sidebar-icons fa-solid fa-message"></i>
+                        <p class="sidebar-text">Mensagens</p>
+                    </a>
                 </li>
-                <li class="sidebar-item">
-                    <a href=""><i class="sidebar-icons fa-solid fa-gear"></i><p class="sidebar-text">Config</p></a>
+                <li class="sidebar-item" >
+                    <div  onclick="openConfigWindow()" href="">
+                        <i class="sidebar-icons fa-solid fa-gear"></i>
+                        <p class="sidebar-text">Config</p>
+                    </div>
                 </li>
+
                 <li class="sidebar-item">
-                    <a href=""><i class="sidebar-icons fa-solid fa-chart-simple"></i><p class="sidebar-text">Analytics</p></a>
-                </li>
-                <li class="sidebar-item">
-                    <a href=""><i class="sidebar-icons fa-solid fa-right-from-bracket"></i><p class="sidebar-text">Sign Out</p></a>
+                    <a href="{{url_for('dashboard.logout')}}">
+                        <i
+                            class="sidebar-icons fa-solid fa-right-from-bracket"></i>
+                        <p class="sidebar-text">Sign Out</p>
+                    </a>
                 </li>
             </ul>
         </nav>
@@ -57,12 +73,12 @@
                 <div class="grid-child">
                     <h1>Não iniciadas</h1>
                     {% for tarefa in tarefas['start'] %}
-                        <div class="child_task--container" data-id="{{ tarefa.id }}">
-                            <i onclick="openTaskWindow('task', event)" class="fa-solid fa-pen-to-square"></i>
-                            <p>{{ tarefa.titulo }}</p>
-                            <p>Até {{ tarefa.data_local}}</p>
-                            <i class="remove_task fa-solid fa-trash"></i>
-                        </div>
+                    <div class="child_task--container" data-id="{{ tarefa.id }}">
+                        <i onclick="openTaskWindow('task', event)" class="fa-solid fa-pen-to-square"></i>
+                        <p>{{ tarefa.titulo }}</p>
+                        <p>Até {{ tarefa.data_local}}</p>
+                        <i class="remove_task fa-solid fa-trash"></i>
+                    </div>
                     {% endfor %}
                 </div>
 
@@ -70,12 +86,12 @@
                 <div class="grid-child">
                     <h1>Em andamento</h1>
                     {% for tarefa in tarefas['on_going'] %}
-                        <div class="child_task--container" data-id="{{ tarefa.id }}">
-                            <i onclick="openTaskWindow('task', event)" class="fa-solid fa-pen-to-square"></i>
-                            <p>{{ tarefa.titulo }}</p>
-                            <p>Até {{ tarefa.data_local }}</p>
-                            <i class="remove_task fa-solid fa-trash"></i>
-                        </div>
+                    <div class="child_task--container" data-id="{{ tarefa.id }}">
+                        <i onclick="openTaskWindow('task', event)" class="fa-solid fa-pen-to-square"></i>
+                        <p>{{ tarefa.titulo }}</p>
+                        <p>Até {{ tarefa.data_local }}</p>
+                        <i class="remove_task fa-solid fa-trash"></i>
+                    </div>
                     {% endfor %}
                 </div>
 
@@ -83,12 +99,12 @@
                 <div class="grid-child">
                     <h1>Concluídas</h1>
                     {% for tarefa in tarefas['finish'] %}
-                        <div class="child_task--container" data-id="{{ tarefa.id }}">
-                            <i onclick="openTaskWindow('task', event)" class="fa-solid fa-pen-to-square"></i>
-                            <p>{{ tarefa.titulo }}</p>
-                            <p>Até {{ tarefa.data_local }}</p>
-                            <i class="remove_task fa-solid fa-trash"></i>
-                        </div>
+                    <div class="child_task--container" data-id="{{ tarefa.id }}">
+                        <i onclick="openTaskWindow('task', event)" class="fa-solid fa-pen-to-square"></i>
+                        <p>{{ tarefa.titulo }}</p>
+                        <p>Até {{ tarefa.data_local }}</p>
+                        <i class="remove_task fa-solid fa-trash"></i>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
@@ -99,13 +115,20 @@
 
         <!-- Janela modal para adicionar/editar tarefa -->
         <nav class="container-addTaskWindow"></nav>
+        <nav class="container-configUser">
+        </nav>
 
         <!-- Dados ocultos para preencher quando editar -->
         <div id="tarefa" style="display: none;" data-tarefas='{{ tarefasEdit | safe }}'></div>
     </main>
 
     <!-- JS -->
+    <script src="../static/js/sidebar.js"></script>
+    <script src="../static/js/sidebarTask.js"></script>
+    <script src="../static/js/config.js"></script>
+    <script src="{{ url_for('static', filename='js/config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
     <script src="{{ url_for('static', filename='js/sidebarTask.js') }}"></script>
 </body>
+
 </html>
