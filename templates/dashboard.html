@@ -30,11 +30,12 @@
         <nav class="sidebar" id="sidebar" data-status="open">
             <ul>
                 <li class="sidebar-item sidebar-status">
-                    <p class="sidebar-text">Sidebar</p>
+                    <p class="sidebar-text">{{usuario.username}}</p>
                     <i id="btn-sidebar" style="cursor: pointer;" class="sidebar-icons fa-solid fa-thumbtack"></i>
                 </li>
                 <li class="sidebar-item">
-                    <a href=""><i class="sidebar-icons fa-solid fa-circle-user sidebar-user"></i></a>
+                    <a href="user/{{ usuario.username }}">
+                    <img style="cursor: pointer;" class="sidebar-user" src="{{ url_for('static', filename=usuario.imagemPerfil ) }}" alt="">
                 </li>
                 <li class="sidebar-item">
                     <a href="{{ url_for('dashboard.friends')}}">
@@ -49,7 +50,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item" >
-                    <div  onclick="openConfigWindow()" href="">
+                    <div onclick="openConfigWindow()">
                         <i class="sidebar-icons fa-solid fa-gear"></i>
                         <p class="sidebar-text">Config</p>
                     </div>
@@ -76,7 +77,9 @@
                     <div class="child_task--container" data-id="{{ tarefa.id }}">
                         <i onclick="openTaskWindow('task', event)" class="fa-solid fa-pen-to-square"></i>
                         <p>{{ tarefa.titulo }}</p>
-                        <p>Até {{ tarefa.data_local}}</p>
+                        {%if tarefa.data_local != ''%}
+                        <p>Até {{ tarefa.data_local }}</p>
+                        {%endif%}
                         <i class="remove_task fa-solid fa-trash"></i>
                     </div>
                     {% endfor %}
@@ -89,7 +92,9 @@
                     <div class="child_task--container" data-id="{{ tarefa.id }}">
                         <i onclick="openTaskWindow('task', event)" class="fa-solid fa-pen-to-square"></i>
                         <p>{{ tarefa.titulo }}</p>
+                        {%if tarefa.data_local != ''%}
                         <p>Até {{ tarefa.data_local }}</p>
+                        {%endif%}
                         <i class="remove_task fa-solid fa-trash"></i>
                     </div>
                     {% endfor %}
@@ -102,7 +107,9 @@
                     <div class="child_task--container" data-id="{{ tarefa.id }}">
                         <i onclick="openTaskWindow('task', event)" class="fa-solid fa-pen-to-square"></i>
                         <p>{{ tarefa.titulo }}</p>
+                        {%if tarefa.data_local != ''%}
                         <p>Até {{ tarefa.data_local }}</p>
+                        {%endif%}
                         <i class="remove_task fa-solid fa-trash"></i>
                     </div>
                     {% endfor %}

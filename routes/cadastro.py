@@ -25,7 +25,7 @@ def index():
         cursor = conn.cursor()
         
         try:
-            cursor.execute("INSERT INTO usuarios (firstname, lastname, username, email, senha) VALUES (?,?,?,?,?)", (firstname, lastname, username, email, senha_hash))
+            cursor.execute("INSERT INTO usuarios (firstname, lastname, username, email, senha, bio, imagemPerfil) VALUES (?,?,?,?,?,?,?)", (firstname, lastname, username, email, senha_hash,"", "uploads/perfil.jpg"))
             conn.commit()
             mensagem = "Usuário cadastrado com sucesso"
             return redirect(url_for("login.index"))

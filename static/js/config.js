@@ -20,8 +20,8 @@ function openConfigWindowLoaded(dataUser) {
                 <div class="configUser-container__grid">
                     <div style="width: 30%;" class="configUser_grid--perfil">
                         <div style="height: 100%; width: 100%; display: flex; justify-content: center;">
-                            <input style="display: none;" type="file" name="">
-                            <img class="user-image" src="../static/uploads/307ce493-b254-4b2d-8ba4-d12c080d6651.jpg"
+                            <input id="upload-input" style="width: 100%; height: 100%;" type="file" name="profileImage" hidden>
+                            <img id="profile-pic" class="user-image" src="../static/uploads/perfil.jpg"
                                 alt="">
                         </div>
                         <div class="container-input">
@@ -55,7 +55,7 @@ function openConfigWindowLoaded(dataUser) {
                         <div class="container-input" style="width: 100%;">
                                 <label for="bio">Edit your Bio</label>
                                 <div>
-                                    <textarea wrap="hard"  rows="3" cols="50" maxlength="500" name="bio" class="fa-solid fa-pen-to-square"></textarea>
+                                    <textarea wrap="hard"  rows="3" cols="50" maxlength="500" name="bio" class="fa-solid fa-pen-to-square">${dataUser['bio']}</textarea>
                                 </div>
                             </div>
                         <div class="container-input">
@@ -71,7 +71,7 @@ function openConfigWindowLoaded(dataUser) {
                             <div class="editEnable">
                                 <span class="spanText">Change your password</span>
                                 <input class="config-inputs" type="password" name="Senha">
-                                <i class="fa-solid fa-pen-to-square editIcon"></i>
+                                <i class="fa-solid fa-pen-to-square editIcon" onclick="window.location.href='/dashboard/change_password'"></i>
                             </div>
                         </div>
                     </div>
@@ -81,6 +81,33 @@ function openConfigWindowLoaded(dataUser) {
                 </div>
             </form>
     `
+    const image = document.getElementById("profile-pic")
+    const inputUploadPic = document.getElementById("upload-input")
+    image.addEventListener('click', () => {
+        inputUploadPic.click();
+    });
+
+    inputUploadPic.addEventListener('change', () => {
+        const file = inputUploadPic.files[0];
+
+        if (!file) return; // Nenhum arquivo selecionado
+
+        // Verifica o tipo MIME do arquivo
+        if (!file.type.startsWith('image/')) {
+            alert('Por favor, selecione um arquivo de imagem válido (jpg, png, etc).');
+            inputUploadPic.value = ''; // Limpa o input
+            return;
+        }
+
+        // Mostra a imagem no front
+        const reader = new FileReader();
+        reader.onload = () => {
+            image.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+
     formConfigNav.style.display = "flex"
     //Enable config edit button
     const span = document.querySelectorAll(".spanText")
@@ -92,32 +119,30 @@ function openConfigWindowLoaded(dataUser) {
         icon[i].addEventListener("click", () => {
             let displayInput = window.getComputedStyle(input[i]).display
             if (displayInput == "none") {
-                console.log(icon[i])
-                input[i].value = span[i].textContent
-                containerEdit[i].classList.add("applyStyles")
-                span[i].style.display = "none"
-                input[i].style.display = "block"
-                input[i].focus();
-                icon[i].classList.remove('fa-pen-to-square');
-                icon[i].classList.add('fa-check');
+                if (input[i].type != "password") {
+                    input[i].value = span[i].textContent
+                    containerEdit[i].classList.add("applyStyles")
+                    span[i].style.display = "none"
+                    input[i].style.display = "block"
+                    input[i].focus();
+                    icon[i].classList.remove('fa-pen-to-square');
+                    icon[i].classList.add('fa-check');
+                }
             } else {
                 // Salvar e voltar para span
                 if (input[i].type != "password") {
                     span[i].textContent = input[i].value;
-                } else {
-                    span[i].textContent = "Change your password"
+                    containerEdit[i].classList.remove("applyStyles")
+                    span[i].style.display = 'block';
+                    input[i].style.display = 'none';
+                    icon[i].classList.remove('fa-check');
+                    icon[i].classList.add('fa-pen-to-square');
                 }
-
-                containerEdit[i].classList.remove("applyStyles")
-                span[i].style.display = 'block';
-                input[i].style.display = 'none';
-                icon[i].classList.remove('fa-check');
-                icon[i].classList.add('fa-pen-to-square');
             }
         })
     }
     setupSubmitConfigUser()
-} 
+}
 
 function closeConfigWindow() {
     formConfigNav.style.display = "none"
@@ -129,31 +154,38 @@ function closeConfigWindow() {
 
 function setupSubmitConfigUser() {
     let form = document.querySelector(".configUser_grid")
-    let button = document.getElementById("configUser_button")
 
     form.addEventListener("submit", (event) => {
         event.preventDefault()
 
-        // Monta objeto com userConfigs
-        const userConfigs = {
-            username: form.usernameInput.value,
-            firstName: form.firstNameInput.value,
-            lastName: form.lastNameInput.value,
-            bio: form.bio.value,
-            email: form.emailInput.value,
+        const formData = new FormData()
+
+        formData.append("username", form.usernameInput.value)
+        formData.append("firstName", form.firstNameInput.value)
+        formData.append("lastName", form.lastNameInput.value)
+        formData.append("bio", form.bio.value)
+        formData.append("email", form.emailInput.value)
+
+        const fileInput = form.querySelector('input[type="file"]')
+        if (fileInput.files.length) {
+            formData.append("profileImage", fileInput.files[0])
         }
-        console.log(userConfigs)
         // Envia para backend
         fetch("/dashboard/config_user", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(userConfigs)
+            body: formData,
         })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
                     window.location.reload()
+                } else {
+                    alert("Erro ao salvar os dados")
                 }
+            })
+            .catch((error) => {
+                console.error("Erro ao enviar dados:", error)
+                alert("Erro na requisição")
             })
     })
 }

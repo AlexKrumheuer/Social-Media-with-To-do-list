@@ -105,6 +105,14 @@
     gap: 1rem;
 }
 
+#allDay {
+    flex-direction: row;
+}
+
+#allDay input:focus {
+    outline: none;
+}
+
 .addTask-form div input {
     padding: 0.7rem;
     border-radius: 8px;

@@ -25,8 +25,12 @@ function openTaskWindow(caller, event = null) {
                 <textarea name="description" maxlength="500" rows="6" placeholder="Digite a descrição"></textarea>
             </div>
             <div>
+                <div id="allDay">
+                    <label for="allDay">Tarefa de dia inteiro?</label>
+                    <input id="allDayCheckbox" name="allDay" type="checkbox" >
+                </div>
                 <label for="date">Data limite</label>
-                <input type="datetime-local" name="date">
+                <input id="dateTask" type="datetime-local" name="date">
             </div>
             <div>
                 <label for="filetasktype">Status</label>
@@ -55,9 +59,26 @@ function openTaskWindow(caller, event = null) {
 }
 
 //Setup do submit (criar ou editar)
-function setupSubmit(elementId = null) {
+function setupSubmit(elementId = null, dateNormal, dateNormalValue) {
     let form = document.querySelector(".addTask-form")
     let button = document.getElementById("addButton")
+    
+    const dateTaskCheckbox = document.getElementById("dateTask")
+    const allDayCheckbox = document.getElementById("allDayCheckbox")
+    if (dateNormal) {
+        allDayCheckbox.checked = true
+        dateTaskCheckbox.type = "date"
+    } else {
+         allDayCheckbox.checked = false
+    }
+    dateTaskCheckbox.value = dateNormalValue
+    allDayCheckbox.addEventListener("change", (event) => {
+        if (event.target.checked) {
+            dateTaskCheckbox.type = "date"
+        } else {
+            dateTaskCheckbox.type = "datetime-local"
+        }
+    })
 
     form.addEventListener("submit", (event) => {
         event.preventDefault()
@@ -88,23 +109,23 @@ function setupSubmit(elementId = null) {
     })
 }
 
-function removerTarefa(event){
+function removerTarefa(event) {
     const taskContainer = event.target.closest(".child_task--container")
     const id = taskContainer.dataset.id
 
     fetch("/dashboard/remover_tarefa", {
         method: "POST",
-        headers: { "Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: id })
     })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success) {
-            taskContainer.remove()
-        } else {
-            alert("Erro ao remover tarefa!")
-        }
-    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                taskContainer.remove()
+            } else {
+                alert("Erro ao remover tarefa!")
+            }
+        })
 }
 
 
@@ -124,6 +145,22 @@ function fillItems(event) {
         document.querySelector(".addTask-form textarea[name='description']").value = element.descricao
         document.querySelector(".addTask-form input[name='date']").value = element.data_local
         document.querySelector(".addTask-form select[name='filetasktype']").value = element.status
-        setupSubmit(element.id)
+
+        let dateNormal = false;
+        let dateInput = ""
+        if (!element.data_local.includes(":")) {
+            dateNormal = true
+        }
+
+        if (!dateNormal) {
+            const [data, hora] = element.data_local.split(' ')
+            const [dia, mes, ano] = data.split('/')
+            dateInput = `${ano}-${mes}-${dia}T${hora}`
+        } else {
+            const [dia, mes, ano] = element.data_local.split('/')
+            dateInput = `${ano}-${mes}-${dia}`
+        }
+
+        setupSubmit(element.id, dateNormal, dateInput)
     }
 }

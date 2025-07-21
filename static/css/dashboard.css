@@ -19,7 +19,7 @@ main {
 .sidebar ul {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 3rem;
 }
 
 .sidebar-item a,
@@ -40,7 +40,10 @@ main {
 }
 
 .sidebar-user {
-    font-size: 10rem;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+    align-items: center;
 }
 
 .sidebar-item {

@@ -23,7 +23,7 @@
             <h2>Amigos</h2>
 
             <div>
-                <a class="home-button" href="/templates/dashboard.html">
+                <a class="home-button" onclick="window.location.href='/dashboard'">
                     <i class="fa-solid fa-house"></i>
                     Home
                 </a>
@@ -32,20 +32,20 @@
 
         <ul class="sidebar-items">
             <li>
-                <a href="./friend-request.html">
+                <a onclick="window.location.href='/dashboard/requests'">
                     <i class="fa-solid fa-user-large"></i>
                     <p>Pedidos de Amizade</p>
                 </a>
             </li>
             <li>
-                <a href="./friends-suggestions.html">
+                <a onclick="window.location.href='/dashboard/suggestions'">
                     <i class="fa-solid fa-user-plus"></i>
                     <p>Sugestões</p>
                 </a>
 
             </li>
             <li>
-                <a href="./allfriends.html">
+                <a onclick="window.location.href='/dashboard/friends'">
                     <i class="fa-solid fa-users-line"></i>
                     <p>Todos os Amigos</p>
                 </a>
@@ -55,22 +55,31 @@
     </section>
     <div class="perfil">
         <div class="perfil-image">
-            <p>Carlos Antônio</p>
-            <img src="/static/uploads/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg" alt="">
+            <p>{{ usuario['firstname'] }} {{ usuario['lastname'] }}</p>
+            <img src="{{ url_for('static', filename=usuario["imagemPerfil"]) }}"  alt="">
         </div>
 
         <div class="bio">
             <label for="bio">Bio</label>
-            <p name="bio">Sou uma pessoa curiosa, apaixonada por aprender e explorar novas áreas. Gosto de desafios e
-                acredito que a dedicação e a vontade de evoluir fazem toda a diferença em qualquer caminho que
-                escolhemos trilhar</p>
+            <p name="bio">{{ usuario['bio'] }}</p>
         </div>
+        {%if usuarioLogado != usuario['id']%}
         <div>
-            <button>Enviar pedido de amizade</button>
-            <button>Mensagem</button>
+            {%if status%}
+                <button onclick="window.location.href='/dashboard/unfollow/{{usuario['id']}}'">Deixar de Seguir</button>
+            {%else%}
+            
+                <button onclick="addFriend({{ usuario['id']}})">Enviar pedido de amizade</button>
+                {%endif%}
+            
+            <button onclick="window.location.href='/dashboard/mensagens_talk/{{usuario['id']}}'">Mensagem</button>
         </div>
+        {%endif%}
     </div>
 
+
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='js/friends.js') }}"></script>
 </body>
 
 </html>

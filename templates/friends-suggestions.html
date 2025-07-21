@@ -57,10 +57,9 @@
                 <div class="grid">
                     {% for usuario in usuarios %}
                 <div class="card">
-                    <img src="../static/uploads/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg" alt="">
+                    <img onclick="window.location.href='user/{{ usuario['username'] }}'" src="{{ url_for('static', filename=usuario.imagemPerfil ) }}" alt="">
                     <h2>{{ usuario.username }}</h2>
                     <button onclick="addFriend({{ usuario['id']}})">Adicionar</button>
-                    <button>Excluir</button>
                 </div>
                 {% endfor %}
                 </div>

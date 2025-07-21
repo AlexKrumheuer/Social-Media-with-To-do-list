@@ -38,8 +38,23 @@
 
     </section>
     <div class="container-message">
-        <p>Nenhum bate-papo selecionado</p>
+        <div class="profile">
+            <img src="{{ url_for('static', filename=friend.imagemPerfil ) }}" alt="">
+            <p class="receiverId" data-friend-id='{{friend.id}}'>{{friend.firstname}} {{friend.lastname}}</p>
+        </div>
+        <div class="message">
+            
+        </div>
+        
+        <form id="formMessage" class="submit">
+            <input type="text" id="inputMessage" placeholder="Type your message..." required>
+            <button style="border: none;" type="submit">
+                <i class="fa-solid fa-reply"></i>
+            </button>
+        </form>
     </div>
+
+    <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
 </body>
 
 </html>

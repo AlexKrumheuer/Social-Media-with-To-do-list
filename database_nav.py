@@ -31,8 +31,32 @@ cursor.execute("""
 """)
 
 cursor.execute("""
-    DELETE FROM relationship;
+    CREATE TABLE IF NOT EXISTS usuarios(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    firstname TEXT,
+    lastname TEXT,
+    username TEXT UNIQUE,
+    email TEXT UNIQUE,
+    senha TEXT, 
+    bio TEXT,
+    imagemPerfil Text);
 """)
+
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS messages(
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sender_id INTEGER NOT NULL,
+    receiver_id INTEGER NOT NULL,
+    content TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    read BOOLEAN DEFAULT 0,
+
+    FOREIGN KEY (sender_id) REFERENCES usuarios(id),
+    FOREIGN KEY (receiver_id) REFERENCES usuarios(id)
+               );
+""")
+
+cursor.execute("DELETE FROM messages;")
 
 conn.commit()
 conn.close()

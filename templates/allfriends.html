@@ -60,10 +60,11 @@
 
                 {% for friend in friendslist %}
                 <div class="card">
-                    <img src="../static/uploads/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg" alt="">
+                    <img onclick="window.location.href=`user/{{ friend.username }} `" 
+                    src="{{ url_for('static', filename=friend.imagemPerfil ) }}" alt="">
                     <h2>{{ friend.username }}</h2>
-                    <button>Conversar</button>
-                    <button>Deixar de seguir</button>
+                    <button onclick="window.location.href='/dashboard/mensagens_talk/{{friend.id}}'">Conversar</button>
+                    <button onclick="window.location.href='/dashboard/unfollow/{{friend.id}}'">Deixar de seguir</button>
                 </div>
                 {% endfor %}
             </div>

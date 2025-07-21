@@ -59,10 +59,10 @@
             <div class="grid">
                 {% for usuario in usuarios %}
                 <div class="card">
-                    <img src="../static/uploads/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg" alt="">
+                    <img onclick="window.location.href='user/{{ usuario.username }}'" src="{{ url_for('static', filename=usuario.imagemPerfil ) }}" alt="">
                     <h2>{{ usuario.username }}</h2>
                     <button onclick="acceptRequest( {{ usuario['user_id'] }} )">Aceitar</button>
-                    <button>Recusar</button>
+                    <button onclick="window.location.href='/dashboard/refuse_request/{{ usuario.user_id }}'">Recusar</button>
                 </div>
                 {% endfor %}
             </div>

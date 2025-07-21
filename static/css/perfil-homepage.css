@@ -22,8 +22,8 @@
 }
 
 .perfil-image img {
-    width: 40%;
-    height: 90%;
+    width: 15rem;
+    height: 15rem;
     border-radius: 50%;
     object-fit: cover;
 }
