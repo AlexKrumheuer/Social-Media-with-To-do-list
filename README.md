@@ -47,17 +47,18 @@ This is a full-stack web application built using **Flask (Python)** for the back
    git clone https://github.com/your-username/your-repo-name.git
    cd your-repo-name
 
-  Create a virtual environment (Windows)
-  ```bash
-  python -m venv venv
-.\venv\Scripts\activate
-````
+ 2. **Create a virtual environment (Windows)
+    ```bash
+   python -m venv venv
+   .\venv\Scripts\activate
+   ```
 
-Install the required Python packages
-```bash
-pip install -r requirements.txt
-````
-And finally, to run the application
-```bash
-python app.py
-```
+   3. **Install the required Python packages
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+   4. And finally, to run the application
+   ```bash
+   python app.py
+   ```
