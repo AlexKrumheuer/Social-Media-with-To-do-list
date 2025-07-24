@@ -28,7 +28,7 @@ This is a full-stack web application built using **Flask (Python)** for the back
 
 ---
 
-## 🛠Tech Stack
+## Tech Stack
 
 ### Backend
 - **Python + Flask**
