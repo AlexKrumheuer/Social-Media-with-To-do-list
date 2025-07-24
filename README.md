@@ -39,3 +39,21 @@ This is a full-stack web application built using **Flask (Python)** for the back
 - HTML5
 - CSS3 (custom styling)
 - JavaScript (DOM manipulation and fetch API)
+
+- ## Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/your-repo-name.git
+   cd your-repo-name
+
+  Create a virtual environment (Windows)
+  python -m venv venv
+.\venv\Scripts\activate
+
+
+Install the required Python packages
+pip install -r requirements.txt
+
+And finally, to run the application
+python app.py
