@@ -1,3 +1,4 @@
+
 # Task & Friend Manager Web App
 
 This is a full-stack web application built using **Flask (Python)** for the backend and **HTML/CSS/JavaScript** for the frontend. The platform allows users to manage personal tasks, maintain friendships, and communicate via a simple chat system.
@@ -40,25 +41,28 @@ This is a full-stack web application built using **Flask (Python)** for the back
 - CSS3 (custom styling)
 - JavaScript (DOM manipulation and fetch API)
 
-- ## Installation
+---
+
+## Installation
 
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/your-username/your-repo-name.git
    cd your-repo-name
+   ```
 
- 2. **Create a virtual environment (Windows)
-    ```bash
+2. **Create a virtual environment (Windows):**
+   ```bash
    python -m venv venv
    .\venv\Scripts\activate
    ```
 
-   3. **Install the required Python packages
+3. **Install the required Python packages:**
    ```bash
    pip install -r requirements.txt
    ```
 
-   4. And finally, to run the application
+4. **Run the application:**
    ```bash
    python app.py
    ```
