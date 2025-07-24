@@ -46,7 +46,6 @@
     height: 20%;
     display: flex;
     padding: 1rem;
-    border: 2px solid #c0c0c0;
 }
 
 .profile img {
@@ -139,4 +138,52 @@
 
 .container-message__perfil h3 {
     color: var(--main-text);
+}
+
+
+@media (max-width: 1050px) {
+    html p {
+        font-size: 1.2rem;
+    }
+
+    .sidebar-option {
+        width: 40%;
+    }
+
+    .container-message {
+        margin-left: 40%;
+        width: 60%;
+    }
+
+    #inputMessage {
+        font-size: 1.3rem;
+        width: 90%;
+    }
+    
+    .profile{
+        height: 10%;
+    }
+
+    .message {
+        height: 82%;
+    }
+
+    .container-message__perfil {
+        font-size: 1rem;
+        gap: 0.7rem;
+    }
+
+    .container-message__perfil img {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .sidebar-message{ 
+        padding: 0.7rem;
+    }
+
+    .container-message__perfil p {
+        font-size: 1rem;
+    }
+
 }

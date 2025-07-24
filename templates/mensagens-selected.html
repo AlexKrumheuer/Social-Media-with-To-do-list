@@ -29,7 +29,7 @@
                 </div>
             </div>
             {% for friend in friends %}
-            <div onclick="window.location.href='/dashboard/mensagens_talk/{{friend.id}}'" class="container-message__perfil">
+            <div onclick="window.location.href='/dashboard/messages_talk/{{friend.id}}'" class="container-message__perfil">
                 <img src="{{ url_for('static', filename=friend.imagemPerfil ) }}" alt="">
                 <p>{{friend.firstname}} {{friend.lastname}}</p>
             </div>

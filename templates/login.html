@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="stylesheet" href="{{ url_for('static', filename='css/registrar.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-pV6W6Xn87HscqOMaj8xtXs11xU+PxLMWmQGyoQCRG6FllPAqZBc4hJrRbX0HYcmj7ySQk6jhLd47vN9QfArP5Q=="
@@ -18,7 +19,7 @@
 <body>
     <section class="main_container">
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <p>Login with:</p>
+            <p class="title-login">Login with:</p>
             <div class="container_button">
                 <button>
                     <i class="fa-brands fa-google"></i>Google
@@ -50,7 +51,7 @@
                 <button class="form_submit" type="submit">Sign In</button>
                 {{mensagem}}
             </form>
-            <p class="info_text"><a style="color: #94A3B8; text-decoration: none;" href="">Forgot your password?</a></b></p>
+            <p class="info_text"><a style="color: #94A3B8; text-decoration: none;" href="{{url_for('login.forgot_password')}}">Forgot your password?</a></b></p>
             <p style="text-align: center;" class="info_text">Don't have an account? <a style="color: #94A3B8; text-decoration: none;" href="{{ url_for("cadastro.index") }}">Sign In</a></p>
         </div>
     </section>

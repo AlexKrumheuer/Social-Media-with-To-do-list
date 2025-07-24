@@ -92,7 +92,7 @@ function setupSubmit(elementId = null, dateNormal, dateNormalValue) {
             status: form.filetasktype.value
         }
 
-        const route = button.textContent === "Edit" ? "editar_tarefa" : "criar_tarefa"
+        const route = button.textContent === "Edit" ? "edit_task" : "create_task"
 
         // Envia para backend
         fetch(`/dashboard/${route}`, {

@@ -18,11 +18,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/addTask.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/configUser.css') }}">
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/dashboard.css">
-    <link rel="stylesheet" href="../static/css/addTask.css">
-    <link rel="stylesheet" href="../static/css/configUser.css">
-</head>
 
 <body>
     <main>
@@ -30,12 +25,13 @@
         <nav class="sidebar" id="sidebar" data-status="open">
             <ul>
                 <li class="sidebar-item sidebar-status">
-                    <p class="sidebar-text">{{usuario.username}}</p>
+                    <p id="username" class="sidebar-text">{{usuario.username}}</p>
                     <i id="btn-sidebar" style="cursor: pointer;" class="sidebar-icons fa-solid fa-thumbtack"></i>
                 </li>
                 <li class="sidebar-item">
-                    <a href="user/{{ usuario.username }}">
+                    <a class="mobile-perfil" href="user/{{ usuario.username }}">
                     <img style="cursor: pointer;" class="sidebar-user" src="{{ url_for('static', filename=usuario.imagemPerfil ) }}" alt="">
+                    <p id="username-mobile" class="sidebar-text username-mobile">{{usuario.username}}</p>
                 </li>
                 <li class="sidebar-item">
                     <a href="{{ url_for('dashboard.friends')}}">
@@ -44,7 +40,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="{{ url_for('dashboard.mensagens')}}">
+                    <a href="{{ url_for('dashboard.messages')}}">
                         <i class="sidebar-icons fa-solid fa-message"></i>
                         <p class="sidebar-text">Mensagens</p>
                     </a>
@@ -130,9 +126,6 @@
     </main>
 
     <!-- JS -->
-    <script src="../static/js/sidebar.js"></script>
-    <script src="../static/js/sidebarTask.js"></script>
-    <script src="../static/js/config.js"></script>
     <script src="{{ url_for('static', filename='js/config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
     <script src="{{ url_for('static', filename='js/sidebarTask.js') }}"></script>

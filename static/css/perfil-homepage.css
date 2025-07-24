@@ -17,7 +17,6 @@
     gap: 1rem;
     width: 60%;
     height: 40%;
-    box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
     padding: 1rem;
 }
 
@@ -43,11 +42,13 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
 }
 
 .bio p {
     text-align: justify;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .bio label {
@@ -70,3 +71,25 @@
     color: #fff;
 }
 
+
+@media (max-width: 1050px) { 
+    .perfil {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .perfil-image {
+        box-shadow: 0;
+        height: auto;
+    }
+
+    .bio {
+        width: 80%;
+        height: 30%;
+    }
+
+    .bio p {
+        height: 100%;
+        width: 100%;
+    }
+}

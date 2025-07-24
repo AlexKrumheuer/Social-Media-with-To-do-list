@@ -132,16 +132,36 @@ body {
     font-size: 0.8rem;
 }
 
-/* Mobile pequeno (até 480px) */
-@media  (max-width: 480px) {
-    .main_container {
-    width: 90%;
-}
-}
+@media (min-width: 480px) {
+    /* celulares médios */
 
-/* Tablet (até 1024px) */
-@media (max-width: 1024px) {
-  .main_container {
-    width: 90%;
 }
+@media (min-width: 768px) { /* tablets */ }
+@media (min-width: 1024px) { /* notebooks/desktops */ }
+@media (min-width: 1280px) { /* grandes desktops */ }
+
+@media (max-width: 1050px) {
+    .main_container {
+        width: 95%;
+    }
+
+    .info_text {
+        font-size: 1.2rem;
+    }
+
+    #name_flex_input input {
+        font-size: 1.3rem;
+    }
+
+    .input_flex input {
+        font-size: 1.3rem;
+    }
+
+    .container_form label {
+        font-size: 1.3rem;
+    }
+
+    .title-login {
+        font-size: 1.3rem;
+    }
 }

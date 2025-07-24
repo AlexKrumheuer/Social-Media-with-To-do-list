@@ -17,8 +17,8 @@
 
 <body>
     <section class="sidebar-option">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <h2>Amigos</h2>
+        <div class="mobile-perfil__container" style="display: flex; align-items: center; justify-content: space-between;">
+            <h2 id="friends-title">Amigos</h2>
 
             <div>
                 <a class="home-button" href="{{ url_for('dashboard.index')}}">
@@ -63,7 +63,7 @@
                     <img onclick="window.location.href=`user/{{ friend.username }} `" 
                     src="{{ url_for('static', filename=friend.imagemPerfil ) }}" alt="">
                     <h2>{{ friend.username }}</h2>
-                    <button onclick="window.location.href='/dashboard/mensagens_talk/{{friend.id}}'">Conversar</button>
+                    <button onclick="window.location.href='/dashboard/messages_talk/{{friend.id}}'">Conversar</button>
                     <button onclick="window.location.href='/dashboard/unfollow/{{friend.id}}'">Deixar de seguir</button>
                 </div>
                 {% endfor %}

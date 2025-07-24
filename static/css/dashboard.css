@@ -1,4 +1,6 @@
-@import url("style.css");
+html {
+    font-size: 16px;
+}
 
 main {
     display: flex;
@@ -19,7 +21,13 @@ main {
 .sidebar ul {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
     gap: 3rem;
+}
+
+.username-mobile {
+    display: none;
 }
 
 .sidebar-item a,
@@ -69,3 +77,62 @@ main {
 }
 
 
+@media (max-width: 1050px) {
+    main {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .sidebar {
+        height: auto;
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .sidebar ul {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .sidebar-item a {
+        vertical-align: center;
+        align-items: center;
+    }
+
+    #username {
+        display: none;
+    }
+
+    #username-mobile {
+        display: block;
+        font-size: 1.2rem;
+    }
+
+    .mobile-perfil {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #btn-sidebar {
+        display: none;
+    }
+
+    .sidebar-user {
+        width: 5rem;
+        height: 5rem;
+    }
+}
+
+@media (min-height: 1050px) {
+    .sidebar ul {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+}

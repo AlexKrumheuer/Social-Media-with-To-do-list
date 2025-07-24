@@ -5,14 +5,20 @@ function addFriend(usuarioId) {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({ amigo_id: usuarioId }),
-    }).then(response=> response.json())
-    .then(data=>{
+    })
+    .then(response => response.json())
+    .then(data => {
         if (data.success) {
-            console.log("bem sucedido")
-            location.reload()
+            console.log("bem sucedido");
+            location.reload();
+        } else {
+            alert("Erro ao adicionar amigo.");
         }
     })
-
+    .catch(error => {
+        console.error("Erro na requisição:", error);
+        alert("Falha ao se conectar ao servidor.");
+    });
 }
 
 function acceptRequest(usuarioId) {
@@ -22,12 +28,17 @@ function acceptRequest(usuarioId) {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({ amigo_id: usuarioId }),
-    }).then(response=> response.json())
-    .then(data=>{
+    })
+    .then(response => response.json())
+    .then(data => {
         if (data.success) {
-            location.reload()
+            location.reload();
         } else {
-            alert("erro")
+            alert("Erro ao aceitar solicitação.");
         }
     })
+    .catch(error => {
+        console.error("Erro na requisição:", error);
+        alert("Falha ao se conectar ao servidor.");
+    });
 }

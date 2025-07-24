@@ -33,6 +33,13 @@
     gap: 0.3em;
 }
 
+.config-container__pic {
+    height: 100%; 
+    width: 100%; 
+    display: flex; 
+    justify-content: center;
+}
+
 
 .configUser_grid--perfil div {
     width: 100%;
@@ -135,10 +142,6 @@
 
 
 
-
-.applyStyles span {
-}
-
 .applyStyles input {
     display: block;
     background-color: var(--secondbackground-color);
@@ -150,4 +153,58 @@
 
 .applyStyles input:focus {
     outline: none;
+}
+
+@media (max-width: 420px) {
+    html {
+        font-size: 7px;
+    }
+}
+
+@media (min-width: 421px) and (max-width: 500px) {
+    html {
+        font-size: 9px;
+    }
+}
+
+@media (max-width: 1050px) {
+    #mobile-size {
+        font-size: 1.3rem;
+    }
+    
+    .configUser_grid {
+        width: 80%;
+        height: auto;
+    }
+
+    .user-image {
+        width: 5rem;
+        height: 5rem;
+    }
+
+    .mobile-img_pic {
+        height: 5rem;
+    }
+
+    #mobile-username {
+        height: 50%;
+    }
+
+    .configUser_grid--perfil {
+        gap: 1.5rem;
+    }
+
+    .configUser_grid--perfil label {
+        font-size: 1.5rem;
+        color: #fff;
+    }
+
+    .container-input {
+        gap: 1rem;
+    }
+
+    .editEnable span {
+        font-size: 1.5rem;
+        color: #fff;
+    }
 }

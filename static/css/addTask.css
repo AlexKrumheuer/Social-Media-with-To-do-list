@@ -25,7 +25,7 @@
     height: 100%;
     overflow-y: auto;
     gap: 1rem;
-    padding: 1rem;
+    padding: 2rem;
 }
 
 .grid-child p {
@@ -169,4 +169,78 @@
     font-size: 1.5rem;
     padding: 0.5rem;
     cursor: pointer;
+}
+
+
+@media (min-width: 320px) and (max-width: 500px) {
+    .container-grid {
+        width: 100%;
+    }
+
+    .mobile-title {
+        visibility: visible;
+    }
+    .container-grid__child {
+        flex-direction: column;
+        min-height: auto;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        gap: 5rem;
+    }
+
+    .grid-child {
+        border: none;
+        width: 100%;
+        height: auto;
+        overflow-y: hidden;
+        font-size: 1.3rem;
+        padding: 1rem;
+        display: flex;
+    }
+
+    .child_task--container {
+        font-size: 1.3rem;
+        min-width: 10rem;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: none;
+    }
+    .child_task--container p {
+        font-size: 1.3rem;
+    }
+
+    .container-grid {
+        height: 100%;
+        padding: 2rem;
+    }
+
+    body {
+        height: auto;
+    }
+}
+
+
+@media (max-width: 1050px) {
+    .container-grid {
+        width: 100%;
+    }
+
+    .addTask-window {
+        height: auto;
+        width: 90%;
+        font-size: 1.3rem;
+    }
+
+    .addTask-form  {
+        gap: 1rem;
+    }
+    
+    .addTask-form div input {
+        font-size: 1.3rem;
+    }
+
+    .addTask-form div select {
+        font-size: 1.3rem;
+    }
 }

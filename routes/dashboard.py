@@ -6,8 +6,7 @@ from werkzeug.utils import secure_filename
 import json
 from datetime import datetime
 import bcrypt
-from itsdangerous import URLSafeTimedSerializer
-from flask_mail import Mail, Message
+from functools import wraps
 
 ############################################################ Initial Configs ############################################################
 bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
@@ -21,185 +20,203 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-#Função para buscar e organizar tarefas
-def add_tarefas_html():
+#Function to get user's tasks
+def get_tasks_by_user():
     usuario_id = session.get("usuario_id")
 
     conn = get_db_connection()
     cursor = conn.cursor()    
     cursor.execute("SELECT * FROM tarefas WHERE usuario_id=?", (usuario_id,))
-    tarefas_db = cursor.fetchall()
-    tarefas_db 
+    tasks_db = cursor.fetchall()
 
-    tarefas_dict = []
-    for t in tarefas_db:
-
-        data_formatada = ""
+    tasks_dict = []
+    for t in tasks_db:
+        formated_date = ""
         if t["data_local"]:
             try:
-                # Tenta converter com hora (datetime-local)
+                # Try to convert in datetime-local format
                 dt = datetime.strptime(t["data_local"], "%Y-%m-%dT%H:%M")
-                data_formatada = dt.strftime("%d/%m/%Y %H:%M")
+                formated_date = dt.strftime("%d/%m/%Y %H:%M")
             except ValueError:
                 try:
-                    # Tenta converter só a data
+                    # Try to convert in date format
                     dt = datetime.strptime(t["data_local"], "%Y-%m-%d")
-                    data_formatada = dt.strftime("%d/%m/%Y")
+                    formated_date = dt.strftime("%d/%m/%Y")
                 except ValueError:
-                    # Mantém como está se não conseguir converter
-                    data_formatada = t["data_local"]
+                    # Maintain state if cannot convert
+                    formated_date = t["data_local"]
 
-        tarefa = {
+        task = {
             "id": t["id"],
             "titulo": t["titulo"],
             "descricao": t["descricao"],
-            "data_local": data_formatada,
+            "data_local": formated_date,
             "status": t["status"],
         }
-        tarefas_dict.append(tarefa)
+        tasks_dict.append(task)
 
-    # Separar por status
-    start = [t for t in tarefas_dict if t["status"] == "start"]
-    on_going = [t for t in tarefas_dict if t["status"] == "onGoing"]
-    finish = [t for t in tarefas_dict if t["status"] == "finish"]
+    # Separate by status
+    start = [t for t in tasks_dict if t["status"] == "start"]
+    on_going = [t for t in tasks_dict if t["status"] == "onGoing"]
+    finish = [t for t in tasks_dict if t["status"] == "finish"]
 
-    tarefas = {
+    tasks_status = {
         "start": start,
         "on_going": on_going,
         "finish": finish,
     }
 
     conn.close()
-    return [tarefas, tarefas_dict]
+    return [tasks_status, tasks_dict]
 
-#Rota principal (dashboard)
+#Login required function
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "usuario_id" not in session:
+            return redirect(url_for("login.index"))
+        return f(*args, **kwargs)
+    return decorated_function
+############################################################ Dashboard Route ############################################################
 @bp.route("/", methods=["GET"])
+@login_required
 def index():
-    if "usuario_id" not in session:
-        return redirect(url_for("login.index"))
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM usuarios WHERE id=?", (session.get("usuario_id"),))
-    usuario = cursor.fetchone()
-    lista = add_tarefas_html()
-    return render_template("dashboard.html", tarefas=lista[0], tarefasEdit=json.dumps(lista[1]), usuario=usuario)
+    user = cursor.fetchone()
+    taskList = get_tasks_by_user()
+    return render_template("dashboard.html", tarefas=taskList[0], tarefasEdit=json.dumps(taskList[1]), usuario=user)
 
-#Rota para editar tarefa
-@bp.route("/editar_tarefa", methods=["POST"])
-def editar_tarefa():
+
+
+############################################################ Task Session ############################################################
+
+
+############################################################ Edit Task Route ############################################################
+@bp.route("/edit_task", methods=["POST"])
+def edit_task():
     data = request.get_json()
-    usuario_id = session.get("usuario_id")
+    user_id = session.get("usuario_id")
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM tarefas WHERE id=? AND usuario_id=?", (data["id"], usuario_id))
-    tarefa = cursor.fetchone()
-    if not tarefa:
+    #Verify if there are any of this user
+    cursor.execute("SELECT * FROM tarefas WHERE id=? AND usuario_id=?", (data["id"], user_id))
+    task = cursor.fetchone()
+    if not task:
         return jsonify({"success": False, "error": "Tarefa não encontrada ou acesso negado"}), 403
 
+    #Update Task
     cursor.execute("""
         UPDATE tarefas
         SET titulo = ?, descricao = ?, data_local = ?, status = ?
         WHERE id = ? AND usuario_id = ?
-    """, (data['titulo'], data['descricao'], data['data_local'], data['status'], data["id"], usuario_id))
+    """, (data['titulo'], data['descricao'], data['data_local'], data['status'], data["id"], user_id))
     conn.commit()
     conn.close()
 
     return jsonify({"success": True})
 
-#Rota para criar tarefa
-@bp.route("/criar_tarefa", methods=["POST"])
-def criar_tarefa():
+############################################################ Create Task Route ############################################################
+@bp.route("/create_task", methods=["POST"])
+def create_task():
     data = request.get_json()
-
-    usuario_id = session.get("usuario_id")
+    user_id = session.get("usuario_id")
 
     conn = get_db_connection()
     cursor = conn.cursor()
+    #Insert Task into table Tasks
     cursor.execute("""
         INSERT INTO tarefas (titulo, descricao, data_local, status, usuario_id)
         VALUES (?, ?, ?, ?, ?)
-    """, (data['titulo'], data['descricao'], data['data_local'], data['status'], usuario_id))
+    """, (data['titulo'], data['descricao'], data['data_local'], data['status'], user_id))
     conn.commit()
     conn.close()
 
     return jsonify({"success": True})
 
-#Rota para remover tarefa
-@bp.route("/remover_tarefa", methods=["POST"])
-def remover_tarefa():
+############################################################ Remove Task Route ############################################################
+@bp.route("/remove_task", methods=["POST"])
+def remove_task():
     data = request.get_json()
     id = data["id"]
-    usuario_id = session.get("usuario_id")
+    user_id = session.get("usuario_id")
 
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM tarefas WHERE id=? AND usuario_id=?", (id, usuario_id))
-    tarefa = cursor.fetchone()
-    if not tarefa:
+    #Select task to be removed
+    cursor.execute("SELECT * FROM tarefas WHERE id=? AND usuario_id=?", (id, user_id))
+    task = cursor.fetchone()
+    #If task is not found, returns an error
+    if not task:
         return jsonify({"success": False, "error": "Tarefa não encontrada ou acesso negado"}), 403
-
-    cursor.execute("DELETE FROM tarefas WHERE id = ? AND usuario_id=?", (id,usuario_id))
+    #Remove Task
+    cursor.execute("DELETE FROM tarefas WHERE id = ? AND usuario_id=?", (id,user_id))
     conn.commit()
     conn.close()
 
     return jsonify({"success": True})
 
-#Rota para logout
+
+
+
+
+
+############################################################ Logout Route ############################################################
 @bp.route("/logout", methods=["GET"])
 def logout():
     session.clear()
     return redirect(url_for("login.index"))
 
-#Rota para mensagens
-@bp.route("/mensagens", methods=["GET"])
-def mensagens():
+
+
+############################################################ Message Routes ############################################################
+
+############################################################ Message Main Route ############################################################
+@bp.route("/messages", methods=["GET"])
+@login_required
+def messages():
     usuario_id = session.get("usuario_id")
-    if not usuario_id:
-        return redirect(url_for("login.index"))
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    #SELECT FRIENDS
+    #Select Friends to show in sidebar of message page
     cursor.execute("""
-SELECT *
-FROM usuarios u
-JOIN relationship r ON (u.id = r.amigo_id OR u.id = r.usuario_id)
-WHERE
-    (r.usuario_id = :usuario_id OR r.amigo_id = :usuario_id)
-    AND r.status = 'friends'
-    AND u.id != :usuario_id
-""", (usuario_id,))
+    SELECT * FROM usuarios u
+    JOIN relationship r ON (u.id = r.amigo_id OR u.id = r.usuario_id)
+    WHERE
+        (r.usuario_id = :usuario_id OR r.amigo_id = :usuario_id)
+        AND r.status = 'friends'
+        AND u.id != :usuario_id """, (usuario_id,))
     friends = cursor.fetchall()
     conn.close()
-    return render_template("mensagens.html", friends=friends)
+    return render_template("message.html", friends=friends)
 
-#Rota to send Messages
+############################################################ Send Message Route ############################################################
 @bp.route("/send_message", methods=["POST"])
+@login_required
 def send_message():
-    usuario_id = session.get("usuario_id")
-    if not usuario_id:
-        return redirect(url_for("login.index"))
+    user_id = session.get("usuario_id")
     conn = get_db_connection()
     cursor = conn.cursor()
     data = request.get_json()
-    cursor.execute("INSERT INTO messages (sender_id, receiver_id, content) VALUES (?,?,?)", (usuario_id, data['destinatario_id'], data['content']))
+    #Insert message into message Table
+    cursor.execute("INSERT INTO messages (sender_id, receiver_id, content) VALUES (?,?,?)", (user_id, data['receiver_id'], data['content']))
     conn.commit()
     conn.close()
-
     return jsonify({"status": "success", "message": "Messagee was sent successfully"})
 
+############################################################ Api to load messages on live ############################################################
 @bp.route("/api/messages/<friend_id>")
+@login_required
 def api_messages(friend_id):
-    usuario_id = session.get("usuario_id")
-    if not usuario_id:
-        return redirect(url_for("login.index"))
-    
+    user_id = session.get("usuario_id")
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    #Select Messages
     cursor.execute("""
         SELECT sender_id, receiver_id, content, strftime('%H:%M', timestamp) AS hora
         FROM messages
@@ -208,48 +225,44 @@ def api_messages(friend_id):
             OR  
             (sender_id = ? AND receiver_id = ?)
         ORDER BY timestamp ASC
-    """, (usuario_id, friend_id, friend_id, usuario_id))
-
+    """, (user_id, friend_id, friend_id, user_id))
     messages = cursor.fetchall()
     conn.close()
-
+    #Return message formated
     messages_list = [dict(m) for m in messages]
 
     return jsonify(messages_list)
 
-
-@bp.route("/mensagens_talk/<friend_id>")
-def mensagens_talk(friend_id):
-    usuario_id = session.get("usuario_id")
-    if not usuario_id:
-        return redirect(url_for("login.index"))
+############################################################ Route to load conversation page ############################################################
+@bp.route("/messages_talk/<friend_id>")
+@login_required
+def messages_talk(friend_id):
+    user_id = session.get("usuario_id")
     conn = get_db_connection()
     cursor = conn.cursor()
-    #SELECT FRIENDS TO TALK
+
+    #Selects friends to show in sidebar
     cursor.execute("""
     SELECT * FROM usuarios WHERE id=?
 """, (friend_id,))
     friend=cursor.fetchone()
     cursor.execute("""
-SELECT *
-FROM usuarios u
-JOIN relationship r ON (u.id = r.amigo_id OR u.id = r.usuario_id)
-WHERE
-    (r.usuario_id = :usuario_id OR r.amigo_id = :usuario_id)
-    AND r.status = 'friends'
-    AND u.id != :usuario_id
-""", (usuario_id,))
+    SELECT * FROM usuarios u
+    JOIN relationship r ON (u.id = r.amigo_id OR u.id = r.usuario_id)
+    WHERE
+        (r.usuario_id = :usuario_id OR r.amigo_id = :usuario_id)
+        AND r.status = 'friends'
+        AND u.id != :usuario_id """, (user_id,))
     friends = cursor.fetchall()
 
-    #SELECT MESSAGES
+    #Select messages for the conversation page
     cursor.execute("""
     SELECT sender_id, receiver_id, content, strftime('%H:%M', timestamp) AS hora FROM messages
     WHERE
         (sender_id = ? AND receiver_id = ?)
     OR  
         (sender_id = ? AND receiver_id = ?)
-    ORDER BY timestamp ASC
-""", (usuario_id, friend_id, friend_id, usuario_id))
+    ORDER BY timestamp ASC """, (user_id, friend_id, friend_id, user_id))
     messages = cursor.fetchall()
     conn.close()
 
@@ -257,118 +270,117 @@ WHERE
 
 
 
-#Rota para amigos
+
+
+############################################################ Friends Routes ############################################################
+############################################################ Route to all your friends page ############################################################
 @bp.route("/friends", methods=["GET"])
+@login_required
 def friends():
-    usuario_id = session.get("usuario_id")
-    if not usuario_id:
-        return redirect(url_for("login.index"))
+    user_id = session.get("usuario_id")
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Eu enviei
+    # Load Friends that the user sent the friend request
     cursor.execute("""
         SELECT usuarios.id, usuarios.username, usuarios.imagemPerfil
         FROM relationship
         JOIN usuarios ON relationship.amigo_id = usuarios.id
         WHERE relationship.usuario_id = ? AND relationship.status = 'friends'
-    """, (usuario_id,))
-
+    """, (user_id,))
     friend_sent = cursor.fetchall()
 
-    # Eu recebi
+    # Load Friends that the user received the friend request
     cursor.execute("""
         SELECT usuarios.id, usuarios.username, usuarios.imagemPerfil
         FROM relationship
         JOIN usuarios ON relationship.usuario_id = usuarios.id
         WHERE relationship.amigo_id = ? AND relationship.status = 'friends'
-    """, (usuario_id,))
-
+    """, (user_id,))
     friend_received = cursor.fetchall()
+
     friendslist = friend_sent + friend_received
     conn.close()
     return render_template("allfriends.html", friendslist=friendslist)
 
-#Rota para requests de amizade
+############################################################ Route to all your request of friendship page ############################################################
 @bp.route("/requests", methods=["GET"])
+@login_required
 def requests():
-    usuario_id = session.get("usuario_id")
-    if not usuario_id:
-        return redirect(url_for("login.index"))
+    user_id = session.get("usuario_id")
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    #Select all your requests
     cursor.execute("""
     SELECT relationship.id AS rel_id, usuarios.id AS user_id, usuarios.username, usuarios.imagemPerfil
-FROM relationship 
-JOIN usuarios ON relationship.usuario_id = usuarios.id
-WHERE relationship.amigo_id = ? AND relationship.status = 'pendente'
-""", (usuario_id,))
+    FROM relationship 
+    JOIN usuarios ON relationship.usuario_id = usuarios.id
+    WHERE relationship.amigo_id = ? AND relationship.status = 'pendente' """, (user_id,))
     
-    usuarios = cursor.fetchall()
+    users = cursor.fetchall()
     conn.close()
 
-    return render_template("friend-request.html", usuarios=usuarios)
+    return render_template("friend-request.html", usuarios=users)
 
-#Rota para sugestões de amizade
+############################################################ Route to all your suggestions of friendship page ############################################################
 @bp.route("/suggestions", methods=["GET"])
+@login_required
 def suggestions():
-    usuario_id = session.get("usuario_id")
-    if not usuario_id:
-        return redirect(url_for("login.index"))
+    user_id = session.get("usuario_id")
     conn = get_db_connection()
     cursor = conn.cursor()
+    #Select your suggestions in table relationship and usuarios
     cursor.execute("""
     SELECT u.id, u.username, u.imagemPerfil
-FROM usuarios u
-WHERE u.id != :usuario_id
-AND u.id NOT IN (
-    SELECT amigo_id FROM relationship
-    WHERE usuario_id = :usuario_id
-    AND status IN ('friends', 'pendente')
-)
-AND u.id NOT IN (
-    SELECT usuario_id FROM relationship
-    WHERE amigo_id = :usuario_id
-    AND status IN ('friends', 'pendente')
-);
-""", (usuario_id,))
+    FROM usuarios u
+    WHERE u.id != :usuario_id
+    AND u.id NOT IN (
+        SELECT amigo_id FROM relationship
+        WHERE usuario_id = :usuario_id
+        AND status IN ('friends', 'pendente'))
+    AND u.id NOT IN (
+        SELECT usuario_id FROM relationship
+        WHERE amigo_id = :usuario_id
+        AND status IN ('friends', 'pendente')); """, (user_id,))
     
-    usuarios = cursor.fetchall()
+    users = cursor.fetchall()
     conn.close()
 
-    return render_template("friends-suggestions.html", usuarios=usuarios)
+    return render_template("friends-suggestions.html", usuarios=users)
 
-#Rota para enviar sugestão de amizade
+############################################################ Route send request of friendship ############################################################
 @bp.route("/add_friend", methods=["POST"])
 def add_friend():
     data = request.get_json()
-    usuario_id = session.get("usuario_id")
-    amigo_id = data.get("amigo_id")
 
-    if not usuario_id or not amigo_id:
+    user_id = session.get("usuario_id")
+    friend_id = data.get("amigo_id")
+
+    #Verify if those ids exist are not an invalid value
+    if not user_id or not friend_id:
         return jsonify({"success": False, "error": "IDs inválidos"}), 400
     
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    #Insert the request of friendship into relationship Table
     cursor.execute("""
         INSERT INTO relationship (usuario_id, amigo_id, status)
-        VALUES (?, ?, ?)
-""", (usuario_id, amigo_id, "pendente"))
+        VALUES (?, ?, ?) """, (user_id, friend_id, "pendente"))
     conn.commit()
     conn.close()
 
     return jsonify({"success": True})
 
-#Rota para aceitar pedido de amizade
+############################################################ Route accept request of friendship ############################################################
 @bp.route("/accept_request", methods=["POST"])
 def accept_request():
     data = request.get_json()
-    usuario_id = session.get("usuario_id")
-    amigo_id = data.get("amigo_id")
+    user_id = session.get("usuario_id")
+    friend_id = data.get("amigo_id")
 
-    if not usuario_id or not amigo_id:
+    if not user_id or not friend_id:
         return jsonify({"success": False, "error": "IDs inválidos"}), 400
     
     conn = get_db_connection()
@@ -377,73 +389,73 @@ def accept_request():
     cursor.execute("""
     UPDATE relationship 
     SET status = ?
-    WHERE usuario_id = ? AND amigo_id = ?
-""", ('friends', amigo_id, usuario_id))
+    WHERE usuario_id = ? AND amigo_id = ? """, ('friends', friend_id, user_id))
     conn.commit()
     conn.close()
 
     return jsonify({"success": True})
 
-#Rota para recusar request
+############################################################ Route refuse request of friendship ############################################################
 @bp.route("/refuse_request/<friend_id>", methods=["GET"])
+@login_required
 def refuse_request(friend_id):
-    usuario_id = session.get("usuario_id")
-    if not usuario_id:
-        return redirect(url_for("login.index"))
-    print(f"Teste agora {friend_id} {usuario_id}")
+    user_id = session.get("usuario_id")
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM relationship WHERE usuario_id=? AND amigo_id=?",(friend_id, usuario_id))
+    cursor.execute("DELETE FROM relationship WHERE usuario_id=? AND amigo_id=?",(friend_id, user_id))
     conn.commit()
     conn.close()
 
     return redirect(url_for("dashboard.requests"))
 
-#Rota to unfollow
+############################################################ Route unfollow an user ############################################################
 @bp.route("/unfollow/<friend_id>", methods=["GET"])
+@login_required
 def unfollow(friend_id):
-    usuario_id = session.get("usuario_id")
-    if not usuario_id:
-        return redirect(url_for("login.index"))
-    print(friend_id)
+    user_id = session.get("usuario_id")
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM relationship WHERE (usuario_id=? AND amigo_id=?) OR (usuario_id=? AND amigo_id=?)",(usuario_id, friend_id, friend_id, usuario_id))
+    cursor.execute("DELETE FROM relationship WHERE (usuario_id=? AND amigo_id=?) OR (usuario_id=? AND amigo_id=?)",(user_id, friend_id, friend_id, user_id))
     conn.commit()
     conn.close()
 
     return redirect(url_for("dashboard.friends"))
 
 
-#Rota para acessar dados dos usuarios
+
+
+############################################################ Route config user perfil ############################################################
+############################################################ Route to get user info  ############################################################
 @bp.route("/get_user")
 def get_user():
-    usuario_id = session.get("usuario_id")
+    user_id = session.get("usuario_id")
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT firstname, lastname, username, email, bio FROM usuarios WHERE id = ? ", (usuario_id,))
-    usuario_data = cursor.fetchall()
-    usuarios = [{'firstname': row[0], 'lastname': row[1], 'username': row[2], 'email': row[3], 'bio': row[4]} for row in usuario_data]
+    cursor.execute("SELECT firstname, lastname, username, email, bio FROM usuarios WHERE id = ? ", (user_id,))
+    user_data = cursor.fetchall()
+    users = [{'firstname': row[0], 'lastname': row[1], 'username': row[2], 'email': row[3], 'bio': row[4]} for row in user_data]
     conn.close()
-    return jsonify(usuarios)
+    return jsonify(users)
 
-#Rota para alterar configurações de perfil
+############################################################ Route to config user info  ############################################################
 @bp.route("/config_user", methods=["POST"])
 def config_user():
-    usuario_id = session.get("usuario_id")
+    user_id = session.get("usuario_id")
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM usuarios WHERE id=?", (usuario_id,))
-    usuario = cursor.fetchone()
-    if not usuario:
+
+    cursor.execute("SELECT * FROM usuarios WHERE id=?", (user_id,))
+    user = cursor.fetchone()
+    #Verify if user was found
+    if not user:
         return jsonify({"success": False, "error": "Usuario não encontrada ou acesso negado"}), 403
     
-    # Extrai os dados antigos
-    old_data = dict(usuario)  # converte o Row em dict
+    #Get old data user
+    old_data = dict(user)  # CConvert into a dict
 
     form = request.form
 
-    # Usa os dados enviados *se* existirem, senão usa os antigos
+    # Update to new data, if there's no new data, maintain old ones
     updated_data = {
         "firstname": form.get("firstName") or old_data["firstname"],
         "lastname":  form.get("lastName") or old_data["lastname"],
@@ -452,66 +464,42 @@ def config_user():
         "bio":       form.get("bio") or old_data["bio"],
     }
 
+    #Update session data
     session['usuario_nome'] = updated_data['username']
     session["email"] = updated_data['email']
 
+    #Update in table user info
     cursor.execute("""
         UPDATE usuarios
         SET firstname = ?, lastname = ?, username = ?, email = ?, bio = ?
-        WHERE id = ?
-    """, (updated_data['firstname'], updated_data['lastname'], updated_data['username'], updated_data['email'], updated_data['bio'], usuario_id))
+        WHERE id = ? """, (updated_data['firstname'], updated_data['lastname'], updated_data['username'], updated_data['email'], updated_data['bio'], user_id))
     
+    #Get image file path
     file = request.files.get("profileImage")
     if file:
         filename = secure_filename(file.filename)
         file.save(os.path.join("static/uploads", filename))
-        cursor.execute("UPDATE usuarios SET imagemPerfil=? WHERE id=?", (f"uploads/{filename}", usuario_id))
+        cursor.execute("UPDATE usuarios SET imagemPerfil=? WHERE id=?", (f"uploads/{filename}", user_id))
     
     conn.commit()
     conn.close()
 
     return jsonify({"success": True})
 
-@bp.route("/user/<username>")
-def perfil_usuario(username):
-    usuario_logado = session.get("usuario_id")
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM usuarios WHERE username = ?", (username,) )
-    usuario = cursor.fetchone()
-    
-    cursor.execute("""
-    SELECT 1 FROM relationship
-    WHERE ((usuario_id = ? AND amigo_id = ?) OR (usuario_id = ? AND amigo_id = ?))
-    AND status == 'friends'
-""", (usuario_logado, usuario['id'], usuario['id'], usuario_logado))
-
-    resultado = cursor.fetchone()
-    if resultado:
-        friends = True
-    else:
-        friends = False
-    conn.close()
-    if not usuario:
-        return "Usuário não encontrado",  404
-
-    return render_template("perfil-homepage.html", usuario=usuario, usuarioLogado=usuario_logado, status=friends)
-
+############################################################ Change password page ############################################################
 @bp.route("/change_password")
+@login_required
 def change_password():
-    usuario_id = session.get("usuario_id")
-    if not usuario_id:
-        return redirect(url_for("login.index"))
     return render_template("changePassword.html")
 
-#Rota
+############################################################# Reset password route ############################################################
 @bp.route("/reset_password", methods=["POST"])
+@login_required
 def reset_password():
-    usuario_id = session.get("usuario_id")
-    if not usuario_id:
-        return redirect(url_for("login.index"))
+    user_id = session.get("usuario_id")
 
     form = request.form
+    #Get new and old password typed by user
     updated_data = {
         "currentPassword": form.get("currentPassword"),
         "newPassword":  form.get("newPassword"),
@@ -520,21 +508,60 @@ def reset_password():
 
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM usuarios WHERE id=?", (usuario_id,))
+    cursor.execute("SELECT * FROM usuarios WHERE id=?", (user_id,))
     user = cursor.fetchone()
 
+    #Verify if the old password matchs and if the newPassword and its confirmation match
     if not bcrypt.checkpw(updated_data["currentPassword"].encode('utf-8'), user[5]) or updated_data["newPassword"]!=updated_data["confirmNewPassword"]:
-        mensagem= "Please verify that your current password is correct and that the new password matches the confirmation"
+        alert= "Please verify that your current password is correct and that the new password matches the confirmation"
         conn.close()
-        return render_template("changePassword.html", mensagem=mensagem)
+        return render_template("changePassword.html", mensagem=alert)
 
-    nova_senha_hash = bcrypt.hashpw(updated_data["newPassword"].encode("utf-8"), bcrypt.gensalt())
-    cursor.execute("UPDATE usuarios SET senha=? WHERE id=?", (nova_senha_hash, usuario_id))
+    new_password_hashed = bcrypt.hashpw(updated_data["newPassword"].encode("utf-8"), bcrypt.gensalt())
+    cursor.execute("UPDATE usuarios SET senha=? WHERE id=?", (new_password_hashed, user_id))
     conn.commit()
     conn.close()
     session.clear()
 
     return jsonify({"success": True})
 
+
+
+
+############################################################ Route to your perfil page and other users perfil page  ############################################################
+@bp.route("/user/<username>")
+def user_perfil(username):
+    user_id = session.get("usuario_id")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM usuarios WHERE username = ?", (username,) )
+    user = cursor.fetchone()
+    
+    #Get the info to know if this perfil page from a friend of yours
+    cursor.execute("""
+    SELECT 1 FROM relationship
+    WHERE ((usuario_id = ? AND amigo_id = ?) OR (usuario_id = ? AND amigo_id = ?))
+    AND status == 'friends' """, (user_id, user['id'], user['id'], user_id))
+
+    result = cursor.fetchone()
+    if result:
+        friends = True
+    else:
+        friends = False
+    conn.close()
+    if not user:
+        return "Usuário não encontrado",  404
+
+    return render_template("perfil-homepage.html", usuario=user, usuarioLogado=user_id, status=friends)
+
+
+    
+#Route to Recover Password
+@bp.route("/forgot_password", methods=["GET", "POST"])
+def forgot_password():
+    if request.method == "POST":   
+        email = request.form("email")
+
+        #Verify if email exists in DB
     
 

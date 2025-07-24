@@ -11,19 +11,18 @@
     <!-- Kit opcional do Font Awesome -->
     <script src="https://kit.fontawesome.com/f2a6af5805.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="stylesheet" href="/static/css/friends.css">
-    <link rel="stylesheet" href="/static/css/perfil-homepage.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/friends.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil-homepage.css') }}">
     <title>Profile</title>
 </head>
 
 <body>
     <section class="sidebar-option">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <h2>Amigos</h2>
+        <div class="mobile-perfil__container" style="display: flex; align-items: center; justify-content: space-between;">
+            <h2 id="friends-title">Amigos</h2>
 
             <div>
-                <a class="home-button" onclick="window.location.href='/dashboard'">
+                <a class="home-button" href="{{ url_for('dashboard.index')}}">
                     <i class="fa-solid fa-house"></i>
                     Home
                 </a>
@@ -32,24 +31,23 @@
 
         <ul class="sidebar-items">
             <li>
-                <a onclick="window.location.href='/dashboard/requests'">
+                <a href="{{ url_for('dashboard.requests') }}">
                     <i class="fa-solid fa-user-large"></i>
                     <p>Pedidos de Amizade</p>
                 </a>
             </li>
             <li>
-                <a onclick="window.location.href='/dashboard/suggestions'">
+                <a href="{{ url_for('dashboard.suggestions')}}">
                     <i class="fa-solid fa-user-plus"></i>
                     <p>Sugestões</p>
                 </a>
 
             </li>
             <li>
-                <a onclick="window.location.href='/dashboard/friends'">
+                <a href="{{ url_for('dashboard.friends')}}">
                     <i class="fa-solid fa-users-line"></i>
                     <p>Todos os Amigos</p>
                 </a>
-
             </li>
         </ul>
     </section>
@@ -72,7 +70,7 @@
                 <button onclick="addFriend({{ usuario['id']}})">Enviar pedido de amizade</button>
                 {%endif%}
             
-            <button onclick="window.location.href='/dashboard/mensagens_talk/{{usuario['id']}}'">Mensagem</button>
+            <button onclick="window.location.href='/dashboard/messages_talk/{{usuario['id']}}'">Mensagem</button>
         </div>
         {%endif%}
     </div>

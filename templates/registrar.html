@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/registrar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-pV6W6Xn87HscqOMaj8xtXs11xU+PxLMWmQGyoQCRG6FllPAqZBc4hJrRbX0HYcmj7ySQk6jhLd47vN9QfArP5Q=="
@@ -18,7 +19,7 @@
 <body>
     <section class="main_container">
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <p>Register with:</p>
+            <p class="title-login">Register with:</p>
             <div class="container_button">
                 <button>
                     <i class="fa-brands fa-google"></i>Google
@@ -40,12 +41,12 @@
                         <label for="last_name">Last Name</label>
                     </div>
                     <div>
-                        <div class="name_flex_input">
+                        <div id="name_flex_input" class="name_flex_input">
                             <i class="fa-solid fa-circle-user"></i>
                             <input type="text" name="first_name" maxlength="20" placeholder="Type your first name" required>
                         </div>
                         
-                        <div class="name_flex_input">
+                        <div id="name_flex_input" class="name_flex_input">
                             <i class="fa-solid fa-circle-user"></i>
                             <input type="text" name="last_name" maxlength="20" placeholder="Type your last name" required>
                         </div>
@@ -53,7 +54,7 @@
                     </div>
                 </div>
                 <label for="username">Username</label>
-                <div class="input_flex">
+                <div id="name_flex_input" class="input_flex">
                     <i class="fa-solid fa-user"></i>
                     <input type="text" name="username" maxlength="20" placeholder="Type your username" required>
                 </div>

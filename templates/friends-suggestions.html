@@ -11,12 +11,12 @@
     <!-- Kit opcional do Font Awesome -->
     <script src="https://kit.fontawesome.com/f2a6af5805.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/friends.css') }}">>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/friends.css') }}">
 </head>
 <body>
    <section class="sidebar-option">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <h2>Amigos</h2>
+        <div class="mobile-perfil__container" style="display: flex; align-items: center; justify-content: space-between;">
+            <h2 id="friends-title">Amigos</h2>
 
             <div>
                 <a class="home-button" href="{{ url_for('dashboard.index')}}">
@@ -28,7 +28,7 @@
 
         <ul class="sidebar-items">
             <li>
-                <a href="{{ url_for('dashboard.requests')}}">
+                <a href="{{ url_for('dashboard.requests') }}">
                     <i class="fa-solid fa-user-large"></i>
                     <p>Pedidos de Amizade</p>
                 </a>

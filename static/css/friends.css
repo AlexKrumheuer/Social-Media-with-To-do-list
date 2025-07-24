@@ -158,3 +158,72 @@ body {
 .card button:hover {
     background-color: var(--hover-button);
 }
+
+@media (max-width: 420px) {
+    html {
+        font-size: 7px;
+    }
+}
+
+@media (min-width: 421px) and (max-width: 500px) {
+    html {
+        font-size: 9px;
+    }
+}
+
+@media (max-width: 1050px) {
+    body {
+        display: block;
+    }
+
+    .sidebar-option {
+        position: static;
+        flex-direction: row;
+        height: auto;
+        width: 100%;
+    }
+
+    .sidebar-items {
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    #friends-title {
+        display: none;
+    }
+
+    .mobile-perfil__container {
+        flex-direction: column;
+    }
+
+    .mobile-perfil__container div {
+        height: 100%;
+    }
+
+    .home-button {
+        height: 100%;
+        align-items: center;
+    }
+
+    .friendlist-grid {
+        margin-left: 0;
+    }
+
+    .card {
+        width: 16rem;
+        height: 24rem;
+        gap: 1rem;
+    }
+
+    .card img {
+        height: 50%;
+    }
+
+    .card button {
+        font-size: 1.3rem;
+    }
+
+    .grid {
+        grid-template-columns: auto auto;
+    }
+}
