@@ -9,7 +9,10 @@ This is a full-stack web application built using **Flask (Python)** for the back
 
 ### User Authentication
 - Secure login and registration using password hashing
-- "Forgot Password" and "Reset Password" functionality
+- **Forgot Password** and **Reset Password** functionality  
+  **Note:** To enable the "Forgot Password" feature, you need to configure an email service.  
+  This involves setting up an email account (e.g., Gmail) and generating an **App Password** or enabling "less secure app access" depending on your email provider.  
+  You must add these email credentials (email address and app password) to your application's configuration so that password reset emails can be sent successfully.
 
 ### User Profile Management
 - Edit firstname, lastname, username, and profile picture
